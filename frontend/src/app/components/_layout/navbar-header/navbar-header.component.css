@@ -1,0 +1,9 @@
+.navigtion-header {
+    position: sticky;
+    top: 0;
+    z-index: 1071;
+}
+
+.navbar-brand, .nav-item {
+    margin-right: 20px;
+}

@@ -1,3 +1,33 @@
-<p>
-  dashboard works!
-</p>
+<div class="row">
+  <div class="col-12">
+    <div class="header-panel text-right">
+      <div class="btn btn-outline-dark">
+        Create Invoices Due Within 1 Week
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>
+              <div class="btn btn-outline-dark"
+               [routerLink]="['/tenantbill/edit']"
+               routerLinkActive="router-link-active">Edit</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

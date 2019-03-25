@@ -1,3 +1,43 @@
-<p>
-  tenantbill-edit works!
-</p>
+<div class="row">
+  <div class="form">
+    <div class="form-group">
+      <label for="tenantName">Tenant Name:</label>
+      <input type="text" class="form-control" id="tenantName"
+       value="Mendel Felixsshon" disabled/>
+    </div>
+    <div class="form-group">
+      <label for="billName">Item Name:</label>
+      <input type="text" class="form-control" id="billName"
+       value="Rent for master bedroom" disabled/>
+    </div>
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea class="form-control" id="description">
+For the period from 31 May 2019 to 30 Jun 2019
+      </textarea>
+    </div>
+    <div class="form-group">
+      <label for="dueDate">Due Date:</label>
+      <input type="text" class="form-control" id="dueDate"
+       value="31 Jun 2019" disabled/>
+    </div>
+    <div class="form-group">
+      <label for="rentCost">Rent Cost:</label>
+      <div class="row">
+        <div class="col-1 text-right">$</div>
+        <div class="col-7">
+          <input type="text" class="form-control" id="rentCost" value="138"
+           disbaled/>
+        </div>
+        <div class="col-4">per month</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+      <div class="btn btn-outline-dark">Mark as Paid</div>
+</div>
+<div class="row">
+      <div class="btn btn-outline-dark">Save Changes</div>
+      <div class="btn btn-outline-dark">Discard Changes</div>
+</div>
