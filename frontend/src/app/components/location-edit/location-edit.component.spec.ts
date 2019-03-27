@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AreaEditComponent } from './area-edit.component';
+import { LocationEditComponent } from './location-edit.component';
 
-describe('AreaEditComponent', () => {
-  let component: AreaEditComponent;
-  let fixture: ComponentFixture<AreaEditComponent>;
+describe('LocationEditComponent', () => {
+  let component: LocationEditComponent;
+  let fixture: ComponentFixture<LocationEditComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AreaEditComponent ]
+      declarations: [ LocationEditComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AreaEditComponent);
+    fixture = TestBed.createComponent(LocationEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

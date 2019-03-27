@@ -19,8 +19,10 @@ import { PropertyAddComponent
 } from './components/property-add/property-add.component';
 import { PropertyEditComponent
 } from './components/property-edit/property-edit.component';
-import { AreaAddComponent } from './components/area-add/area-add.component';
-import { AreaEditComponent } from './components/area-edit/area-edit.component';
+import { LocationAddComponent
+} from './components/location-add/location-add.component';
+import { LocationEditComponent
+} from './components/location-edit/location-edit.component';
 import { ExtrachargeComponent
 } from './components/extracharge/extracharge.component';
 import { ExtrachargeAddComponent
@@ -55,8 +57,6 @@ import { routing } from './app.routing';
     PropertyComponent,
     PropertyAddComponent,
     PropertyEditComponent,
-    AreaAddComponent,
-    AreaEditComponent,
     ExtrachargeComponent,
     ExtrachargeAddComponent,
     ExtrachargeEditComponent,
@@ -67,7 +67,9 @@ import { routing } from './app.routing';
     TenantAddComponent,
     TenantEditComponent,
     NavbarLayoutComponent,
-    NavbarHeaderComponent
+    NavbarHeaderComponent,
+    LocationAddComponent,
+    LocationEditComponent
   ],
   imports: [
     BrowserModule,
