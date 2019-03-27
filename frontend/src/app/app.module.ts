@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { UiSwitchModule } from 'ngx-toggle-switch';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -70,6 +71,7 @@ import { routing } from './app.routing';
   ],
   imports: [
     BrowserModule,
+    UiSwitchModule,
     HttpClientModule,
     FormsModule,
     routing

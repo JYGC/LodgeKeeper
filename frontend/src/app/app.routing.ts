@@ -11,6 +11,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { StatusComponent } from './components/status/status.component';
 import { PropertyComponent } from './components/property/property.component';
 import { TenantbillEditComponent } from './components/tenantbill-edit/tenantbill-edit.component';
+import { PropertyAddComponent } from './components/property-add/property-add.component';
+import { PropertyEditComponent } from './components/property-edit/property-edit.component';
 
 const appRoutes: Routes = [
   {
@@ -38,6 +40,14 @@ const appRoutes: Routes = [
       {
         path: 'tenantbill/edit',
         component: TenantbillEditComponent
+      },
+      {
+        path: 'property/add',
+        component: PropertyAddComponent
+      },
+      {
+        path: 'property/edit',
+        component: PropertyEditComponent
       }
     ]// ,
     // canActivate: [EnsureAuthenticated]

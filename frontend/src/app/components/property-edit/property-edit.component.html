@@ -1,3 +1,127 @@
-<p>
-  property-edit works!
-</p>
+<div class="row">
+  <div class="col">
+    <label for="propertyAddress">Property Address:</label>
+    <input type="text" class="form-control" id="propertyAddress" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <label for="rentType">Rent Type:</label>
+    <div class="col">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="rentTypeType-ddl"
+         ngbDropdownToggle>Toggle dropup</button>
+        <div ngbDropdownMenu aria-labelledby="rentTypeType-ddl">
+          <button ngbDropdownItem>-- Select option --</button>
+          <button ngbDropdownItem>Whole property</button>
+          <button ngbDropdownItem>Private rooms</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <label for="rentCost">Rent Cost ($ per week):</label>
+    <input type="text" class="form-control" id="rentCost" />
+  </div>
+  <div class="col">
+    <div>
+      <label for="offStreetParking">Off Street Parking avaliable?</label>
+      <ui-switch id="offStreetParking" color="grey" size="large">
+      </ui-switch>
+    </div>
+    <div>
+      <label for="extraParkingFee">Extra Parking Fee ($ per week):</label>
+      <input type="text" class="form-control" id="extraParkingFee" />
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <label for="descriptionType">Description:</label>
+    <textarea class="form-control" id="descriptionType">
+    </textarea>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="btn btn-outline-dark viewCurrentTenancy">
+      View current tenancy
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="btn btn-outline-dark newTenancy">
+      New tenancy
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="title">
+      Locations in this Property
+    </div>
+    <div class="header-panel text-right">
+      <div class="btn btn-outline-dark">Add Location</div>
+    </div>
+    <div class="table-container location-table">
+      <table class="table">
+        <thead>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Handle</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>
+              <div class="btn btn-outline-dark">Edit</div>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Dawn</td>
+            <td>Keane</td>
+            <td>@dkn</td>
+            <td>
+              <div class="btn btn-outline-dark">Edit</div>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Raymond</td>
+            <td>Barrying</td>
+            <td>@rby</td>
+            <td>
+              <div class="btn btn-outline-dark">Edit</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="btn btn-danger">Delete Property</div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="btn btn-outline-dark">Save changes</div>
+    <div class="btn btn-outline-dark">Discard changes</div>
+  </div>
+</div>
+
