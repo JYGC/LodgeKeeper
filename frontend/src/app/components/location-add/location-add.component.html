@@ -1,3 +1,28 @@
-<p>
-  location-add works!
-</p>
+<div class="row">
+  <div class="col">
+    <label for="locationType-ddl">Location Type:</label>
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="locationType-ddl"
+         ngbDropdownToggle>Toggle dropup</button>
+        <div ngbDropdownMenu aria-labelledby="locationType-ddl">
+          <button ngbDropdownItem>-- Select option --</button>
+          <button ngbDropdownItem>Whole property</button>
+          <button ngbDropdownItem>Private rooms</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <label for="locationName">Location Name:</label>
+    <input type="text" class="form-control" id="locationName" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="btn btn-normal">Create Location</div>
+    <div class="btn btn-normal">Cancel</div>
+  </div>
+</div>
