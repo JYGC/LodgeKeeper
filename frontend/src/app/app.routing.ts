@@ -41,12 +41,12 @@ const appRoutes: Routes = [
         component: DashboardComponent
       },
       {
-        path: 'property',
-        component: PropertyComponent
-      },
-      {
         path: 'tenantbill/edit',
         component: TenantbillEditComponent
+      },
+      {
+        path: 'property',
+        component: PropertyComponent
       },
       {
         path: 'property/add',
