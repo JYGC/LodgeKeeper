@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/home/junying/.local/share/virtualenvs/backend-CGrYhr93/bin/python"
+    "python.pythonPath": "/home/junying/.local/share/virtualenvs/backend-CGrYhr93/bin/python",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

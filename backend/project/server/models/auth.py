@@ -1,11 +1,11 @@
-# project/server/models.py
-
+"""
+project/server/models/auth.py
+"""
 
 import jwt
 import datetime
 
 from project.server import app, db, bcrypt
-
 
 class User(db.Model):
     """ User Model for storing user related details """
@@ -32,8 +32,8 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1,
-                  seconds=0),
+                'exp': datetime.datetime.utcnow()
+                       + datetime.timedelta(days=1, seconds=0),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
