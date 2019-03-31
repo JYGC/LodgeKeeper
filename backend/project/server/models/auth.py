@@ -7,6 +7,16 @@ import datetime
 
 from project.server import app, db, bcrypt
 
+class Account(db.Model):
+    """ Account Model for storing account related details """
+    __tablename__ = 'account'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    contact_email = db.Column(db.String(255), unique=True, nullable=False)
+    contact_address = db.Column(db.String(255), unique=True, nullable=False)
+    contact_phone = db.Column(db.String(9), unique=True, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False)
+
 class User(db.Model):
     """ User Model for storing user related details """
     __tablename__ = "users"
