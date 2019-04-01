@@ -2,6 +2,8 @@
 property/server/models/property.py
 """
 
+import datetime
+
 from project.server import db
 
 class Property(db.Model):
@@ -19,13 +21,12 @@ class Property(db.Model):
     rent_cost = db.Column(db.Numeric(12, 2))
     is_deleted = db.Column(db.Boolean)
     date_constructed = db.Column(db.DateTime, nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'),
                            nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, address, property_type, rent_type, description, parking,
-                 rent_cost, is_delete, date_constructed, date_created,
-                 account_id):
+                 rent_cost, is_delete, date_constructed, account_id):
         self.address = address
         self.property_type = property_type
         self.rent_type = rent_type
@@ -34,8 +35,8 @@ class Property(db.Model):
         self.rent_cost = rent_cost
         self.is_deleted = is_delete
         self.date_constructed = date_constructed
-        self.date_created = date_created
         self.account_id = account_id
+        self.date_created = datetime.datetime.now()
 
 class PropertyType(db.Model):
     """ Different property types: Landed House or Apartment """

@@ -9,7 +9,7 @@
   color: #ffffff;
 }
 
-input[type="text"], textarea {
+input[type="text"], input[type="password"], textarea {
   border-radius: 0;
   border-color: #343a40;
 }

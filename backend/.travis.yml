@@ -1,24 +1,27 @@
 language: python
 
 python:
+  - "3.7"
   - "3.6"
   - "3.5"
   - "3.4"
-  - "2.7"
 
 service:
-  - postgresql
+  - mariadb
 
 before_install:
   - export APP_SETTINGS="project.server.config.TestingConfig"
   - export SECRET_KEY="justatest"
 
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
+  - pipenv install
 
 before_script:
-  - psql -c 'create database flask_jwt_auth_test;' -U postgres
+  - mysql --user="root" --execute="CREATE USER 'lodgekeeper'@'localhost' IDENIFIED BY 'Test3r$';"
+  - mysql --user="root" --execute="CREATE DATABASE lodgekeeper;"
+  - mysql --user="root" --execute="CREATE DATABASE lodgekeeper_test;"
+  - mysql --user="root" --execute="GRANT ALL PRIVILEGES ON lodgekeeper.* TO 'lodgekeeper'@'localhost';"
+  - mysql --user="root" --execute="GRANT ALL PRIVILEGES ON lodgekeeper_test.* TO 'lodgekeeper'@'localhost';"
   - python manage.py db init
   - python manage.py db migrate
   - python manage.py db upgrade

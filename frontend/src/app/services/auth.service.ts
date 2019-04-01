@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../models/user';
+import { UserAccount } from '../models/user-account';
 
 @Injectable()
 export class AuthService {
@@ -18,9 +19,10 @@ export class AuthService {
     return this.http.post(url, user, { headers: this.headers }).toPromise();
   }
 
-  register(user: User): Promise<any> {
+  register(userAccount: UserAccount): Promise<any> {
     const url = `${this.BASE_URL}/register`;
-    return this.http.post(url, user, { headers: this.headers }).toPromise();
+    return this.http.post(url, userAccount, { headers: this.headers })
+      .toPromise();
   }
 
   ensureAuthenticated(token): Promise<any> {

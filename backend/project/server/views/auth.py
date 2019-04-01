@@ -5,7 +5,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
 from project.server import bcrypt, db
-from project.server.models.auth import User, BlacklistToken
+from project.server.models.auth import Account, User, BlacklistToken
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -22,9 +22,18 @@ class RegisterAPI(MethodView):
         user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
             try:
+                account = Account(
+                    contact_email=post_data.get('email'),
+                    contact_address=post_data.get('address'),
+                    contact_phone=post_data.get('phone')
+                )
+                # insert new account and flush changes to get this id
+                db.session.add(account)
+                db.session.flush()
                 user = User(
                     email=post_data.get('email'),
-                    password=post_data.get('password')
+                    password=post_data.get('password'),
+                    account_id=account.id
                 )
                 # insert the user
                 db.session.add(user)
@@ -81,7 +90,6 @@ class LoginAPI(MethodView):
                 }
                 return make_response(jsonify(responseObject)), 404
         except Exception as e:
-            print(e)
             responseObject = {
                 'status': 'fail',
                 'message': 'Try again'

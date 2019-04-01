@@ -6,7 +6,7 @@ from project.server.models.property import Property
 property_blueprint = Blueprint('property', __name__)
 
 class PropertyAPI(MethodView):
-    def post(self):
+    def get(self):
         raise NotImplementedError()
 
 class PropertyAddAPI(MethodView):
@@ -31,7 +31,7 @@ property_delete_view = PropertyAPI.as_view('property_delete')
 property_blueprint.add_url_rule(
     '/property',
     view_func=property_view,
-    methods=['POST']
+    methods=['GET']
 )
 property_blueprint.add_url_rule(
     '/property/add',

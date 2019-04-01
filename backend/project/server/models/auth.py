@@ -14,8 +14,14 @@ class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     contact_email = db.Column(db.String(255), unique=True, nullable=False)
     contact_address = db.Column(db.String(255), unique=True, nullable=False)
-    contact_phone = db.Column(db.String(9), unique=True, nullable=False)
+    contact_phone = db.Column(db.String(12), unique=True, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, contact_email, contact_address, contact_phone):
+        self.contact_email = contact_email
+        self.contact_address = contact_address
+        self.contact_phone = contact_phone
+        self.date_created = datetime.datetime.now()
 
 class User(db.Model):
     """ User Model for storing user related details """
@@ -25,14 +31,17 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'),
+                           nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, email, password, admin=False):
+    def __init__(self, email, password, account_id, admin=False):
         self.email = email
         self.password = bcrypt.generate_password_hash(
             password, app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
         self.registered_on = datetime.datetime.now()
+        self.account_id = account_id
         self.admin = admin
 
     def encode_auth_token(self, user_id):
@@ -43,7 +52,8 @@ class User(db.Model):
         try:
             payload = {
                 'exp': datetime.datetime.utcnow()
-                       + datetime.timedelta(days=1, seconds=0),
+                       + datetime.timedelta(seconds=int(app.config.get(
+                           'AUTH_DURATION'))),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
