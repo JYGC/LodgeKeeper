@@ -84,7 +84,6 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
-
 class BlacklistToken(db.Model):
     """
     Token Model for storing JWT tokens

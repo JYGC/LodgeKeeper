@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-status',
@@ -9,11 +10,10 @@ import { AuthService } from '../../services/auth.service';
 export class StatusComponent implements OnInit {
   isLoggedIn = false;
 
-  constructor(private auth: AuthService) { }
+  constructor(private router: Router, private auth: AuthService) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-
     if (token) {
       this.auth.ensureAuthenticated(token).then((user) => {
         console.log(user);
@@ -26,4 +26,14 @@ export class StatusComponent implements OnInit {
     }
   }
 
+  onLogout(): void {
+    this.auth.logout(localStorage.getItem('token'))
+    .then((response) => {
+      console.log(response);
+      localStorage.removeItem('token');
+      this.router.navigateByUrl('/login');
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
 }

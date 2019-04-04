@@ -1,1 +1,1 @@
-# project/server/views/__init__.py
+# project/server/controllers/__init__.py

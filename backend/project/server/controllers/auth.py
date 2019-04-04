@@ -1,7 +1,7 @@
 # project/server/auth/views.py
 
 
-from flask import Blueprint, request, make_response, jsonify
+from flask import Blueprint, request, make_response, jsonify, session
 from flask.views import MethodView
 
 from project.server import bcrypt, db
@@ -76,6 +76,7 @@ class LoginAPI(MethodView):
                 user.password, post_data.get('password')
             ):
                 auth_token = user.encode_auth_token(user.id)
+                #session['auth_token'] = auth_token
                 if auth_token:
                     responseObject = {
                         'status': 'success',
@@ -102,44 +103,18 @@ class UserAPI(MethodView):
     User Resource
     """
     def get(self):
-        # get the auth token
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            try:
-                auth_token = auth_header.split(" ")[1]
-            except IndexError:
-                responseObject = {
-                    'status': 'fail',
-                    'message': 'Bearer token malformed.'
-                }
-                return make_response(jsonify(responseObject)), 401
-        else:
-            auth_token = ''
-        if auth_token:
-            resp = User.decode_auth_token(auth_token)
-            if not isinstance(resp, str):
-                user = User.query.filter_by(id=resp).first()
-                responseObject = {
-                    'status': 'success',
-                    'data': {
-                        'user_id': user.id,
-                        'email': user.email,
-                        'admin': user.admin,
-                        'registered_on': user.registered_on
-                    }
-                }
-                return make_response(jsonify(responseObject)), 200
-            responseObject = {
-                'status': 'fail',
-                'message': resp
+        # Auth user
+        user_id = session.pop('user_id', None)
+        user = User.query.filter_by(id=int(user_id)).first()
+        return make_response(jsonify({
+            'status': 'success',
+            'data': {
+                'user_id': user.id,
+                'email': user.email,
+                'admin': user.admin,
+                'registered_on': user.registered_on
             }
-            return make_response(jsonify(responseObject)), 401
-        else:
-            responseObject = {
-                'status': 'fail',
-                'message': 'Provide a valid auth token.'
-            }
-            return make_response(jsonify(responseObject)), 401
+        })), 200
 
 
 class LogoutAPI(MethodView):

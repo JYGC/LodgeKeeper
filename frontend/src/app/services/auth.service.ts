@@ -19,6 +19,15 @@ export class AuthService {
     return this.http.post(url, user, { headers: this.headers }).toPromise();
   }
 
+  logout(token): Promise<any> {
+    const url = `${this.BASE_URL}/logout`;
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post(url, null, { headers }).toPromise();
+  }
+
   register(userAccount: UserAccount): Promise<any> {
     const url = `${this.BASE_URL}/register`;
     return this.http.post(url, userAccount, { headers: this.headers })
@@ -27,7 +36,6 @@ export class AuthService {
 
   ensureAuthenticated(token): Promise<any> {
     const url = `${this.BASE_URL}/status`;
-
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`

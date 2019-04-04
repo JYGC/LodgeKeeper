@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask
+from flask import Flask, request
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -18,6 +18,10 @@ app.config.from_object(app_settings)
 
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
+
+from project.server.helpers.auth import AuthTokenHelper
+auth_token_helper = AuthTokenHelper()
+app.before_request(auth_token_helper.authenticate_request)
 
 from project.server.controllers.auth import auth_blueprint
 app.register_blueprint(auth_blueprint)

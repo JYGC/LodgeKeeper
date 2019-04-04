@@ -13,6 +13,10 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     AUTH_DURATION = 24 * 60 * 60
+    EXCLUDE_FROM_AUTHENTICATION = [
+        '/auth/register',
+        '/auth/login'
+    ]
 
 
 class DevelopmentConfig(BaseConfig):
