@@ -10,28 +10,11 @@ import unittest
 from project.server import db
 from project.server.models.auth import Account, User, BlacklistToken
 from project.tests.base import BaseTestCase
-
-
-def register_user(self, email, password, address, phone):
-    ''' register user via api '''
-    return self.client.post(
-        '/auth/register',
-        data=json.dumps(dict(email=email, password=password, address=address,
-                             phone=phone)),
-        content_type='application/json',
-    )
-
-def login_user(self, email, password):
-    ''' login user via api '''
-    return self.client.post(
-        '/auth/login',
-        data=json.dumps(dict(email=email, password=password)),
-        content_type='application/json',
-    )
+from project.tests.api_requests.auth import login_user, register_user
 
 
 class TestAuthBlueprint(BaseTestCase):
-    ''' Test functions in Auth Blueprint '''
+    ''' Test views in Auth Blueprint '''
     test_user_email = 'joe@gmail.com'
     test_user_password = 'Test3r$'
     test_user_password2 = 'f15her$'

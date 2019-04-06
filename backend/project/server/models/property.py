@@ -46,7 +46,7 @@ class PropertyType(db.Model):
     value = db.Column(db.String(255), nullable=False)
 
     def __init__(self, value):
-        this.value = value
+        self.value = value
 
 class RentType(db.Model):
     """ Different rent type: Whole Property or Private Rooms """
@@ -56,4 +56,4 @@ class RentType(db.Model):
     value = db.Column(db.String(255), nullable=False)
 
     def __init__(self, value):
-        this.value = value
+        self.value = value

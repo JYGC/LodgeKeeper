@@ -17,6 +17,10 @@ class PropertyEditAPI(MethodView):
     def post(self):
         raise NotImplementedError()
 
+class PropertyGetAPI(MethodView):
+    def post(self):
+        raise NotImplementedError()
+
 class PropertyDeleteAPI(MethodView):
     def get(self):
         raise NotImplementedError()
