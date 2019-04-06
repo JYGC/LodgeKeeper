@@ -6,10 +6,17 @@ import { Router, CanActivate } from '@angular/router';
 export class LoginRedirect implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
-    if (localStorage.getItem('token')) {
-      this.router.navigateByUrl('/status');
-      return false;
+  canActivate(): Promise<boolean> | boolean {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return this.auth.ensureAuthenticated(token)
+      .then((response) => {
+        this.router.navigateByUrl('/dashboard');
+        return false;
+      })
+      .catch((error) => {
+        return true;
+      });
     } else {
       return true;
     }

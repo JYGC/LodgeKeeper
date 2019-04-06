@@ -35,6 +35,7 @@ const appRoutes: Routes = [
   {
     path: '',
     component: NavbarLayoutComponent,
+    canActivate: [EnsureAuthenticated],
     children: [
       {
         path: 'dashboard',

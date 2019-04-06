@@ -19,9 +19,9 @@ app.config.from_object(app_settings)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
-from project.server.helpers.auth import AuthTokenHelper
-auth_token_helper = AuthTokenHelper()
-app.before_request(auth_token_helper.authenticate_request)
+from project.server.helpers.auth import AuthTokenValidator
+token_validator = AuthTokenValidator()
+app.before_request(token_validator.validate)
 
 from project.server.controllers.auth import auth_blueprint
 app.register_blueprint(auth_blueprint)

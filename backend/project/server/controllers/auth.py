@@ -122,44 +122,24 @@ class LogoutAPI(MethodView):
     Logout Resource
     """
     def post(self):
-        # get auth token
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = ''
-        if auth_token:
-            resp = User.decode_auth_token(auth_token)
-            if not isinstance(resp, str):
-                # mark the token as blacklisted
-                blacklist_token = BlacklistToken(token=auth_token)
-                try:
-                    # insert the token
-                    db.session.add(blacklist_token)
-                    db.session.commit()
-                    responseObject = {
-                        'status': 'success',
-                        'message': 'Successfully logged out.'
-                    }
-                    return make_response(jsonify(responseObject)), 200
-                except Exception as e:
-                    responseObject = {
-                        'status': 'fail',
-                        'message': e
-                    }
-                    return make_response(jsonify(responseObject)), 200
-            else:
-                responseObject = {
-                    'status': 'fail',
-                    'message': resp
-                }
-                return make_response(jsonify(responseObject)), 401
-        else:
+        response = None
+        try:
+            auth_token = session.pop('auth_token', None)
+            blacklist_token = BlacklistToken(token=auth_token)
+            db.session.add(blacklist_token)
+            db.session.commit()
+            responseObject = {
+                'status': 'success',
+                'message': 'Successfully logged out.'
+            }
+            response = make_response(jsonify(responseObject)), 200
+        except Exception:
             responseObject = {
                 'status': 'fail',
-                'message': 'Provide a valid auth token.'
+                'message': 'Failed to logout'
             }
-            return make_response(jsonify(responseObject)), 403
+            response = make_response(jsonify(responseObject)), 401
+        return response
 
 # define the API resources
 registration_view = RegisterAPI.as_view('register_api')

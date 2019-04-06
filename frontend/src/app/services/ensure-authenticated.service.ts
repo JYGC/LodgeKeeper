@@ -6,9 +6,17 @@ import { AuthService } from './auth.service';
 export class EnsureAuthenticated implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
-    if (localStorage.getItem('token')) {
-      return true;
+  canActivate(): Promise<boolean> | boolean {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return this.auth.ensureAuthenticated(token)
+      .then((response) => {
+        return true;
+      })
+      .catch((error) => {
+        this.router.navigateByUrl('/login');
+        return false;
+      });
     } else {
       this.router.navigateByUrl('/login');
       return false;
