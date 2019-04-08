@@ -20,8 +20,7 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
 from project.server.helpers.auth import AuthTokenValidator
-token_validator = AuthTokenValidator()
-app.before_request(token_validator.validate)
+app.before_request(AuthTokenValidator.validate)
 
 from project.server.controllers.auth import auth_blueprint
 app.register_blueprint(auth_blueprint)

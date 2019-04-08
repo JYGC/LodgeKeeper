@@ -1,4 +1,4 @@
-''' project/tests/api_requests/auth.py '''
+''' project/tests/actions/requests/auth.py '''
 
 
 import json

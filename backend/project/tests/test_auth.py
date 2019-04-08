@@ -3,23 +3,32 @@ project/tests/test_auth.py
 '''
 
 
-import time
-import json
-import unittest
+import time, json, unittest, random, string
 
 from project.server import db
 from project.server.models.auth import Account, User, BlacklistToken
 from project.tests.base import BaseTestCase
-from project.tests.api_requests.auth import login_user, register_user
+from project.tests.values.auth_values import UserValues
+from project.tests.actions.user import RegisterUser, LoginUser
+from project.tests.actions.requests.auth import login_user, register_user
 
 
 class TestAuthBlueprint(BaseTestCase):
     ''' Test views in Auth Blueprint '''
-    test_user_email = 'joe@gmail.com'
-    test_user_password = 'Test3r$'
-    test_user_password2 = 'f15her$'
-    test_user_address = '130 Fake Street, Homeburg, VIC 6969'
-    test_user_phone = '0456758474'
+    test_user_values = UserValues() # Needs work (continute later)
+    test_user_email = test_user_values.email = 'joe@gmail.com'
+    test_user_password = test_user_values.password = 'Test3r$'
+    test_user_password2 = test_user_values.password2 = 'f15her$'
+    test_user_address = test_user_values.address = '130 Fake Street, Homeburg, VIC 6969'
+    test_user_phone = test_user_values.phone = '0456758474'
+
+    test_fake_token = ''.join(random.choices(
+        string.ascii_letters + string.digits, k=16))
+
+    def setup_actions(self):
+        ''' Initialize Action objects '''
+        self.user_register = RegisterUser(self)
+        self.user_login = LoginUser(self)
 
     def test_registration(self):
         """ Test for user registration """

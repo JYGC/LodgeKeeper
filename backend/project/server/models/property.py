@@ -12,9 +12,9 @@ class Property(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     address = db.Column(db.String(255), nullable=False)
-    property_type = db.Column(db.Integer, db.ForeignKey('property_type.id'),
+    property_type_id = db.Column(db.Integer, db.ForeignKey('property_type.id'),
                               nullable=False)
-    rent_type = db.Column(db.Integer, db.ForeignKey('rent_type.id'),
+    rent_type_id = db.Column(db.Integer, db.ForeignKey('rent_type.id'),
                           nullable=False)
     description = db.Column(db.Text)
     parking = db.Column(db.Boolean, nullable=False)
@@ -25,11 +25,11 @@ class Property(db.Model):
                            nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, address, property_type, rent_type, description, parking,
-                 rent_cost, is_delete, date_constructed, account_id):
+    def __init__(self, address, property_type_id, rent_type_id, description,
+                 parking, rent_cost, is_delete, date_constructed, account_id):
         self.address = address
-        self.property_type = property_type
-        self.rent_type = rent_type
+        self.property_type_id = property_type_id
+        self.rent_type_id = rent_type_id
         self.description = description
         self.parking = parking
         self.rent_cost = rent_cost

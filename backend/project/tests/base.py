@@ -16,6 +16,10 @@ class BaseTestCase(TestCase):
     def setUp(self):
         db.create_all()
         db.session.commit()
+        self.setup_actions()
+
+    def setup_actions(self):
+        pass
 
     def tearDown(self):
         db.session.remove()

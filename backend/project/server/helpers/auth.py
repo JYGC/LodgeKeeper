@@ -16,6 +16,7 @@ class AuthTokenValidator():
     malformed_token_err_msg = 'Bearer token malformed.'
     unknown_err_msg = 'Unknown authentication failure.'
 
+    @classmethod
     def testing_err_msg(self, testing_err_msg):
         '''
         Use more specific messages in unit testing to make it easier to debug an
@@ -23,6 +24,7 @@ class AuthTokenValidator():
         '''
         return testing_err_msg if app.config['TESTING'] else self.auth_err_msg
 
+    @classmethod
     def validate(self):
         ''' Function docstring '''
         if request.path in app.config.get(

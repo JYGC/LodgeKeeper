@@ -40,24 +40,24 @@ class RegisterAPI(MethodView):
                 db.session.commit()
                 # generate the auth token
                 auth_token = user.encode_auth_token(user.id)
-                responseObject = {
+                response = {
                     'status': 'success',
                     'message': 'Successfully registered.',
                     'auth_token': auth_token.decode()
                 }
-                return make_response(jsonify(responseObject)), 201
+                return make_response(jsonify(response)), 201
             except Exception as e:
-                responseObject = {
+                response = {
                     'status': 'fail',
                     'message': 'Some error occurred. Please try again.'
                 }
-                return make_response(jsonify(responseObject)), 401
+                return make_response(jsonify(response)), 401
         else:
-            responseObject = {
+            response = {
                 'status': 'fail',
                 'message': 'User already exists. Please Log in.',
             }
-            return make_response(jsonify(responseObject)), 202
+            return make_response(jsonify(response)), 202
 
 
 class LoginAPI(MethodView):
@@ -69,33 +69,30 @@ class LoginAPI(MethodView):
         post_data = request.get_json()
         try:
             # fetch the user data
-            user = User.query.filter_by(
-                email=post_data.get('email')
-            ).first()
-            if user and bcrypt.check_password_hash(
-                user.password, post_data.get('password')
-            ):
+            user = User.query.filter_by(email=post_data.get('email')).first()
+            if user and bcrypt.check_password_hash(user.password,
+                                                   post_data.get('password')):
                 auth_token = user.encode_auth_token(user.id)
                 #session['auth_token'] = auth_token
                 if auth_token:
-                    responseObject = {
+                    response = {
                         'status': 'success',
                         'message': 'Successfully logged in.',
                         'auth_token': auth_token.decode()
                     }
-                    return make_response(jsonify(responseObject)), 200
+                    return make_response(jsonify(response)), 200
             else:
-                responseObject = {
+                response = {
                     'status': 'fail',
                     'message': 'User does not exist.'
                 }
-                return make_response(jsonify(responseObject)), 404
-        except Exception as e:
-            responseObject = {
+                return make_response(jsonify(response)), 404
+        except Exception as ex:
+            response = {
                 'status': 'fail',
                 'message': 'Try again'
             }
-            return make_response(jsonify(responseObject)), 500
+            return make_response(jsonify(response)), 500
 
 
 class UserAPI(MethodView):
@@ -128,17 +125,17 @@ class LogoutAPI(MethodView):
             blacklist_token = BlacklistToken(token=auth_token)
             db.session.add(blacklist_token)
             db.session.commit()
-            responseObject = {
+            response = {
                 'status': 'success',
                 'message': 'Successfully logged out.'
             }
-            response = make_response(jsonify(responseObject)), 200
+            response = make_response(jsonify(response)), 200
         except Exception:
-            responseObject = {
+            response = {
                 'status': 'fail',
                 'message': 'Failed to logout'
             }
-            response = make_response(jsonify(responseObject)), 401
+            response = make_response(jsonify(response)), 401
         return response
 
 # define the API resources
