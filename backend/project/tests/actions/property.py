@@ -12,7 +12,7 @@ class AddProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
     ''' Add new property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
-    
+
     def api_request(self, auth_token, test_values: PropertyValues):
         ''' add property via api '''
         return self.test_cls.client.post(
@@ -46,9 +46,9 @@ class AddProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         ).filter(Property.id == data['data']['property'][0]['id'])
         self.test_cls.assertEqual(len(property_list), 1)
         self.test_cls.assertEqual(property_list[0].Property.address,
-                            test_values.property_address)
+                                  test_values.property_address)
         self.test_cls.assertEqual(property_list[0].PropertyType.value,
-                            test_values.property_type)
+                                  test_values.property_type)
         self.test_cls.assertFalse(property_list[0].Property.is_deleted)
 
 class AddPropertyBadToken(AddProperty):
@@ -60,7 +60,7 @@ class AddPropertyBadToken(AddProperty):
                                   'Invalid token. Please log in again.')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
         self.test_cls.assertEqual(resp.status_code, 401)
-    
+
     def check_db_state(self, test_values: PropertyValues, data):
         pass
 
@@ -84,7 +84,7 @@ class GetProperty(ActionABC, ApiCheckActionABC):
         data_property = json.loads(resp_property.data.decode())
         self.check_response(test_values, data_property, resp_property)
         return data_property
-    
+
     def check_response(self, test_values: PropertyValues, data, resp):
         self.test_cls.assertEqual(data['status'], 'success')
         self.test_cls.assertIn('data', data)
@@ -132,7 +132,7 @@ class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
     ''' edit property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
-    
+
     def api_request(self, auth_token, property_id,
                     test_values: PropertyValues):
         ''' edit property via api '''
@@ -155,7 +155,7 @@ class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         self.check_response(data_property, resp_property)
         self.check_db_state(property_id, test_values)
         return data_property
-    
+
     def check_response(self, data, resp):
         self.test_cls.assertEqual(data['status'], 'success')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
@@ -193,7 +193,7 @@ class EditPropertyBadToken(EditProperty):
                                   'Invalid token. Please log in again.')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
         self.test_cls.assertEqual(resp.status_code, 401)
-    
+
     def check_db_state(self, property_id, test_values: PropertyValues):
         pass
 
@@ -232,7 +232,7 @@ class DeleteProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         self.check_response(data_property, resp_property)
         self.check_db_state(property_id)
         return data_property
-    
+
     def check_response(self, data, resp):
         self.test_cls.assertEqual(data['status'], 'success')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
@@ -264,7 +264,7 @@ class ListProperty(ActionABC, ApiCheckActionABC):
     ''' Get list of property belonging to user '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
-    
+
     def api_request(self, auth_token):
         ''' Get list of properties owned by user via api '''
         return self.test_cls.client.get(
@@ -276,14 +276,14 @@ class ListProperty(ActionABC, ApiCheckActionABC):
     def run(self, auth_token, property_id_values_dict: dict):
         '''
         Run action. property_id_values_dict needs to be of the follwoing form:
-        {..., property_id <int>: property_value <PropertyValue>, ...}. 
+        {..., property_id <int>: property_value <PropertyValue>, ...}.
         '''
         resp_property = self.api_request(auth_token)
         data_property = json.loads(resp_property.data.decode())
         self.check_response(property_id_values_dict, data_property,
                             resp_property)
         return data_property
-    
+
     def check_response(self, property_id_values_dict: dict, data, resp):
         self.test_cls.assertEqual(data['status'], 'success')
         self.test_cls.assertIn('data', data)

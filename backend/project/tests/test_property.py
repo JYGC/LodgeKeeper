@@ -1,10 +1,10 @@
 ''' project/tests/test_property.py '''
 
 
-import json, unittest, random, string
+import unittest
+import random
+import string
 
-from project.server import db
-from project.server.models.property import Property, PropertyType
 from project.tests.base import BaseTestCase
 from project.tests.actions.user import RegisterUser
 from project.tests.actions.property import (AddProperty, AddPropertyBadToken,
@@ -42,35 +42,35 @@ class TestPropertyBlueprint(BaseTestCase):
     test_property_values.rent_cost = 456.22
 
     test_property_values_2 = PropertyValues()
-    test_property_values_2.address = 'Unit 45, 345 Faes Drive, North Balk, NSW 3222',
-    test_property_values_2.property_type = 'Apartment',
-    test_property_values_2.rent_type = 'Private Room',
-    test_property_values_2.description = 'Description 2',
-    test_property_values_2.parking = True,
+    test_property_values_2.address = 'Unit 45, 345 Faes Drive, North Balk, NSW 3222'
+    test_property_values_2.property_type = 'Apartment'
+    test_property_values_2.rent_type = 'Private Room'
+    test_property_values_2.description = 'Description 2'
+    test_property_values_2.parking = True
     test_property_values_2.rent_cost = 650.09
 
     test_property_values_3 = PropertyValues()
-    test_property_values_3.address = '345 Unit Street, North Balk, NSW 3222',
-    test_property_values_3.property_type = 'Landed Property',
-    test_property_values_3.rent_type = 'Private Room',
-    test_property_values_3.description = 'Description 3',
-    test_property_values_3.parking = True,
+    test_property_values_3.address = '345 Unit Street, North Balk, NSW 3222'
+    test_property_values_3.property_type = 'Landed Property'
+    test_property_values_3.rent_type = 'Private Room'
+    test_property_values_3.description = 'Description 3'
+    test_property_values_3.parking = True
     test_property_values_3.rent_cost = 1000.05
 
     test_property_values_4 = PropertyValues()
-    test_property_values_4.address = '345 Test Street, North Balk, NSW 3222',
-    test_property_values_4.property_type = 'Apartment',
-    test_property_values_4.rent_type = 'Private Room',
-    test_property_values_4.description = 'Description 4 3 2 1',
-    test_property_values_4.parking = True,
+    test_property_values_4.address = '345 Test Street, North Balk, NSW 3222'
+    test_property_values_4.property_type = 'Apartment'
+    test_property_values_4.rent_type = 'Private Room'
+    test_property_values_4.description = 'Description 4 3 2 1'
+    test_property_values_4.parking = True
     test_property_values_4.rent_cost = 750
 
     test_property_values_5 = PropertyValues()
-    test_property_values_5.address = '345 UAT Street, North Balk, NSW 3222',
-    test_property_values_5.property_type = 'Landed Property',
-    test_property_values_5.rent_type = 'Private Room',
-    test_property_values_5.description = 'Description 5 Words Words Words',
-    test_property_values_5.parking = False,
+    test_property_values_5.address = '345 UAT Street, North Balk, NSW 3222'
+    test_property_values_5.property_type = 'Landed Property'
+    test_property_values_5.rent_type = 'Private Room'
+    test_property_values_5.description = 'Description 5 Words Words Words'
+    test_property_values_5.parking = False
     test_property_values_5.rent_cost = 200
 
     test_fake_token = ''.join(random.choices(
@@ -135,7 +135,7 @@ class TestPropertyBlueprint(BaseTestCase):
             self.add_property.run(data_user['auth_token'],
                                   self.test_property_values)
             self.get_nonexistent_property.run(data_user['auth_token'], 3,
-                                  self.test_property_values_3)
+                                              self.test_property_values_3)
 
     def test_get_property_not_belonging_to_user(self):
         ''' Test getting property that does not_belong to user '''
@@ -156,7 +156,7 @@ class TestPropertyBlueprint(BaseTestCase):
         '''
         Test editing property for the first time. This is slightly different
         from further edits as onbly some property fields are filled in after
-        adding 
+        adding
         '''
         with self.client:
             data_user = self.user_register.run(self.test_user_values)
@@ -186,7 +186,7 @@ class TestPropertyBlueprint(BaseTestCase):
             data_property = self.add_property.run(data_user['auth_token'],
                                                   self.test_property_values)
             self.edit_nonexistent_property.run(data_user['auth_token'], 2,
-                                                  self.test_property_values_2)
+                                               self.test_property_values_2)
             # make sure first property wasn't changed
             self.get_property.run(data_user['auth_token'],
                                   data_property['data']['property'][0]['id'],
