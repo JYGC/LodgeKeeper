@@ -9,7 +9,8 @@ from project.server import db
 from project.server.models.auth import Account, User, BlacklistToken
 from project.tests.base import BaseTestCase
 from project.tests.values.auth_values import UserValues
-from project.tests.actions.user import RegisterUser, LoginUser
+from project.tests.actions.user import (RegisterUser, RegisterDuplicateUser,
+                                        LoginUser, LoginNonExistingUser)
 from project.tests.actions.requests.auth import login_user, register_user
 
 
@@ -27,22 +28,15 @@ class TestAuthBlueprint(BaseTestCase):
 
     def setup_actions(self):
         ''' Initialize Action objects '''
-        self.user_register = RegisterUser(self)
-        self.user_login = LoginUser(self)
+        self.register_user = RegisterUser(self)
+        self.register_duplicate_user = RegisterDuplicateUser(self)
+        self.login_user = LoginUser(self)
+        self.login_nonexistent_user = LoginNonExistingUser(self)
 
     def test_registration(self):
         """ Test for user registration """
         with self.client:
-            response = register_user(self, self.test_user_email,
-                                     self.test_user_password,
-                                     self.test_user_address,
-                                     self.test_user_phone)
-            data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'Successfully registered.')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 201)
+            self.register_user.run(self.test_user_values)
 
     def test_registered_with_already_registered_user(self):
         """ Test registration with already registered email"""
@@ -56,53 +50,18 @@ class TestAuthBlueprint(BaseTestCase):
         db.session.add(user)
         db.session.commit()
         with self.client:
-            response = register_user(self, self.test_user_email,
-                                     self.test_user_password,
-                                     self.test_user_address,
-                                     self.test_user_phone)
-            data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'fail')
-            self.assertTrue(
-                data['message'] == 'User already exists. Please Log in.')
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 202)
+            self.register_duplicate_user.run(self.test_user_values)
 
     def test_registered_user_login(self):
         """ Test for login of registered-user login """
         with self.client:
-            # user registration
-            resp_register = register_user(self, self.test_user_email,
-                                          self.test_user_password,
-                                          self.test_user_address,
-                                          self.test_user_phone)
-            data_register = json.loads(resp_register.data.decode())
-            self.assertTrue(data_register['status'] == 'success')
-            self.assertTrue(
-                data_register['message'] == 'Successfully registered.'
-            )
-            self.assertTrue(data_register['auth_token'])
-            self.assertTrue(resp_register.content_type == 'application/json')
-            self.assertEqual(resp_register.status_code, 201)
-            # registered user login
-            response = login_user(self, self.test_user_email,
-                                  self.test_user_password)
-            data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'Successfully logged in.')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 200)
+            self.register_user.run(self.test_user_values)
+            self.login_user.run(self.test_user_values)
 
     def test_non_registered_user_login(self):
         """ Test for login of non-registered user """
         with self.client:
-            response = login_user(self, self.test_user_email,
-                                  self.test_user_password)
-            data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'fail')
-            self.assertTrue(data['message'] == 'User does not exist.')
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 404)
+            self.login_nonexistent_user.run(self.test_user_values)
 
     def test_user_status(self):
         """ Test for user status """
