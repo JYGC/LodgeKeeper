@@ -69,5 +69,12 @@ def drop_db():
     db.drop_all()
 
 
+@manager.command
+def update_default_data():
+    '''Make sure all type data (PropertyType, RentType etc.) are up to date'''
+    models.property.PropertyType.update_type_data()
+    models.property.RentType.update_type_data()
+
+
 if __name__ == '__main__':
     manager.run()
