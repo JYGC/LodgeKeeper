@@ -3,7 +3,7 @@
 
 from flask_testing import TestCase
 
-from project.server import app, db
+from project.server import app, db, models
 
 
 class BaseTestCase(TestCase):
@@ -15,6 +15,8 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         db.create_all()
+        models.property.PropertyType.update_type_data()
+        models.property.RentType.update_type_data()
         db.session.commit()
         self.setup_actions()
 

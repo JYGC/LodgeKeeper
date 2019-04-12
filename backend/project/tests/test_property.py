@@ -35,43 +35,48 @@ class TestPropertyBlueprint(BaseTestCase):
 
     test_property_values = PropertyValues()
     test_property_values.address = 'Unit 56, 345 Fawkes Street, North Balk, NSW 3222'
-    test_property_values.property_type = 'Landed Property'
+    test_property_values.property_type = 'Landed House'
     test_property_values.rent_type = 'Whole Property'
     test_property_values.description = 'Description 1'
     test_property_values.parking = False
     test_property_values.rent_cost = 456.22
+    test_property_values.date_constructed = '2018-03-18'
 
     test_property_values_2 = PropertyValues()
     test_property_values_2.address = 'Unit 45, 345 Faes Drive, North Balk, NSW 3222'
     test_property_values_2.property_type = 'Apartment'
-    test_property_values_2.rent_type = 'Private Room'
+    test_property_values_2.rent_type = 'Private Rooms'
     test_property_values_2.description = 'Description 2'
     test_property_values_2.parking = True
     test_property_values_2.rent_cost = 650.09
+    test_property_values_2.date_constructed = '2018-04-19'
 
     test_property_values_3 = PropertyValues()
     test_property_values_3.address = '345 Unit Street, North Balk, NSW 3222'
-    test_property_values_3.property_type = 'Landed Property'
-    test_property_values_3.rent_type = 'Private Room'
+    test_property_values_3.property_type = 'Landed House'
+    test_property_values_3.rent_type = 'Private Rooms'
     test_property_values_3.description = 'Description 3'
     test_property_values_3.parking = True
     test_property_values_3.rent_cost = 1000.05
+    test_property_values_3.date_constructed = '2018-05-20'
 
     test_property_values_4 = PropertyValues()
     test_property_values_4.address = '345 Test Street, North Balk, NSW 3222'
     test_property_values_4.property_type = 'Apartment'
-    test_property_values_4.rent_type = 'Private Room'
+    test_property_values_4.rent_type = 'Whole Property'
     test_property_values_4.description = 'Description 4 3 2 1'
     test_property_values_4.parking = True
     test_property_values_4.rent_cost = 750
+    test_property_values_4.date_constructed = '2015-06-01'
 
     test_property_values_5 = PropertyValues()
     test_property_values_5.address = '345 UAT Street, North Balk, NSW 3222'
-    test_property_values_5.property_type = 'Landed Property'
-    test_property_values_5.rent_type = 'Private Room'
+    test_property_values_5.property_type = 'Landed House'
+    test_property_values_5.rent_type = 'Private Rooms'
     test_property_values_5.description = 'Description 5 Words Words Words'
     test_property_values_5.parking = False
     test_property_values_5.rent_cost = 200
+    test_property_values_5.date_constructed = '2016-01-01'
 
     test_fake_token = ''.join(random.choices(
         string.ascii_letters + string.digits, k=16))
@@ -105,6 +110,15 @@ class TestPropertyBlueprint(BaseTestCase):
             self.user_register.run(self.test_user_values)
             self.add_property_bad_token.run(self.test_fake_token,
                                             self.test_property_values)
+
+    def test_add_property_with_empty_description(self):
+        ''' Test adding new property with empty description '''
+
+    def test_add_property_with_property_type(self):
+        ''' Test adding new property with unknown property type '''
+
+    def test_add_property_with_rent_type(self):
+        ''' Test adding new property with unknown rent type '''
 
     def test_get_property(self):
         ''' Test getting property data '''

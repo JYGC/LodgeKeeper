@@ -18,8 +18,15 @@ class AddProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         return self.test_cls.client.post(
             '/property/add',
             headers=dict(Authorization='Bearer ' + auth_token),
-            data=json.dumps(dict(address=test_values.address,
-                                 property_type=test_values.property_type)),
+            data=json.dumps(dict(
+                address=test_values.address,
+                property_type=test_values.property_type,
+                rent_type=test_values.rent_type,
+                description=test_values.description,
+                parking=test_values.parking,
+                rent_cost=test_values.rent_cost,
+                date_constructed=test_values.date_constructed
+            )),
             content_type='application/json',
         )
 
@@ -40,15 +47,33 @@ class AddProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         self.test_cls.assertEqual(resp.status_code, 201)
 
     def check_db_state(self, test_values: PropertyValues, data):
-        property_list = db.session.query(Property.address).outerjoin(
+        property_list = db.session.query(
+            Property,
+            PropertyType,
+            RentType
+        ).outerjoin(
             PropertyType,
             Property.property_type_id == PropertyType.id
-        ).filter(Property.id == data['data']['property'][0]['id'])
+        ).outerjoin(
+            RentType,
+            Property.rent_type_id == RentType.id
+        ).filter(Property.id == data['data']['property'][0]['id']).all()
+        
         self.test_cls.assertEqual(len(property_list), 1)
         self.test_cls.assertEqual(property_list[0].Property.address,
-                                  test_values.property_address)
+                                  test_values.address)
         self.test_cls.assertEqual(property_list[0].PropertyType.value,
                                   test_values.property_type)
+        self.test_cls.assertEqual(property_list[0].RentType.value,
+                                  test_values.rent_type)
+        self.test_cls.assertEqual(property_list[0].Property.description,
+                                  test_values.description)
+        self.test_cls.assertEqual(property_list[0].Property.parking,
+                                  test_values.parking)
+        self.test_cls.assertEqual(
+            round(float(property_list[0].Property.rent_cost),2),
+            test_values.rent_cost
+        )
         self.test_cls.assertFalse(property_list[0].Property.is_deleted)
 
 class AddPropertyBadToken(AddProperty):
@@ -75,7 +100,7 @@ class GetProperty(ActionABC, ApiCheckActionABC):
         return self.test_cls.client.post(
             '/property/get',
             headers=dict(Authorization='Bearer ' + auth_token),
-            data=json.dumps(dict(property_id=property_id)),
+            data=json.dumps(dict(id=property_id)),
             content_type='application/json',
         )
 
@@ -139,13 +164,16 @@ class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         return self.test_cls.client.post(
             '/property/edit',
             headers=dict(Authorization='Bearer ' + auth_token),
-            data=json.dumps(dict(id=property_id,
-                                 address=test_values.address,
-                                 property_type=test_values.property_type,
-                                 rent_type=test_values.rent_type,
-                                 description=test_values.description,
-                                 parking=test_values.parking,
-                                 rent_cost=test_values.rent_cost)),
+            data=json.dumps(dict(
+                id=property_id,
+                address=test_values.address,
+                property_type=test_values.property_type,
+                rent_type=test_values.rent_type,
+                description=test_values.description,
+                parking=test_values.parking,
+                rent_cost=test_values.rent_cost,
+                date_constructed=test_values.date_constructed
+            )),
             content_type='application/json',
         )
 
@@ -162,14 +190,19 @@ class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         self.test_cls.assertEqual(resp.status_code, 200)
 
     def check_db_state(self, property_id, test_values: PropertyValues):
-        property_list = db.session.query(Property).outerjoin(
+        property_list = db.session.query(
+            Property,
+            PropertyType,
+            RentType
+        ).outerjoin(
             PropertyType,
             Property.property_type_id == PropertyType.id
         ).outerjoin(
             RentType,
             Property.rent_type_id == RentType.id
-        ).filter(Property.id == property_id)
-        self.test_cls.assertEqual(len(property_list), 1)
+        ).filter(Property.id == property_id).all()
+
+        self.test_cls.assertEqual(len(list(property_list)), 1)
         self.test_cls.assertEqual(property_list[0].Property.address,
                                   test_values.address)
         self.test_cls.assertEqual(property_list[0].PropertyType.value,
@@ -180,8 +213,10 @@ class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
                                   test_values.description)
         self.test_cls.assertEqual(property_list[0].Property.parking,
                                   test_values.parking)
-        self.test_cls.assertEqual(property_list[0].Property.rent_cost,
-                                  test_values.rent_cost)
+        self.test_cls.assertEqual(
+            round(float(property_list[0].Property.rent_cost),2),
+            test_values.rent_cost
+        )
         self.test_cls.assertFalse(property_list[0].Property.is_deleted)
 
 
@@ -222,7 +257,7 @@ class DeleteProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         return self.test_cls.client.post(
             '/property/delete',
             headers=dict(Authorization='Bearer ' + auth_token),
-            data=json.dumps(dict(property_id=property_id)),
+            data=json.dumps(dict(id=property_id)),
             content_type='application/json',
         )
 
@@ -242,8 +277,8 @@ class DeleteProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
         property_list = db.session.query(Property).filter(
             Property.id == property_id
         )
-        self.test_cls.assertEqual(len(property_list), 1)
-        self.test_cls.assertTrue(property_list[0].Property.is_deleted)
+        self.test_cls.assertEqual(len(list(property_list)), 1)
+        self.test_cls.assertTrue(property_list[0].is_deleted)
 
 
 class DeleteNonexistentProperty(DeleteProperty):
@@ -305,7 +340,7 @@ class ListProperty(ActionABC, ApiCheckActionABC):
                     property_value.address
                 )
                 self.test_cls.assertEqual(
-                    data_property_dict[property_id]['property_type'],
+                    data_property_dict[property_id]['property_type'], #
                     property_value.property_type
                 )
                 self.test_cls.assertEqual(

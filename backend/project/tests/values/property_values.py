@@ -5,3 +5,4 @@ class PropertyValues():
     description = None
     parking = None
     rent_cost = None
+    date_constructed = None
