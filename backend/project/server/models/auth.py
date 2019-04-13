@@ -13,8 +13,8 @@ class Account(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     contact_email = db.Column(db.String(255), unique=True, nullable=False)
-    contact_address = db.Column(db.String(255), unique=True, nullable=False)
-    contact_phone = db.Column(db.String(12), unique=True, nullable=False)
+    contact_address = db.Column(db.String(255), nullable=False)
+    contact_phone = db.Column(db.String(12), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, contact_email, contact_address, contact_phone):

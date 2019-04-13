@@ -8,8 +8,10 @@ import string
 from project.tests.base import BaseTestCase
 from project.tests.actions.user import RegisterUser
 from project.tests.actions.property import (AddProperty, AddPropertyBadToken,
+                                            AddPropertyBadItemType,
                                             EditProperty, EditPropertyBadToken,
                                             EditNonexistentProperty,
+                                            EditPropertyBadItemType,
                                             GetProperty, GetNonexistentProperty,
                                             GetPropertyBadToken, ListProperty,
                                             ListPropertyNoProperty,
@@ -78,6 +80,42 @@ class TestPropertyBlueprint(BaseTestCase):
     test_property_values_5.rent_cost = 200
     test_property_values_5.date_constructed = '2016-01-01'
 
+    test_property_empty_description_values = PropertyValues()
+    test_property_empty_description_values.address = 'Unit 56, 345 Fawkes Street, North Balk, NSW 3222'
+    test_property_empty_description_values.property_type = 'Landed House'
+    test_property_empty_description_values.rent_type = 'Whole Property'
+    test_property_empty_description_values.description = 'Description 1'
+    test_property_empty_description_values.parking = False
+    test_property_empty_description_values.rent_cost = 456.22
+    test_property_empty_description_values.date_constructed = '2018-03-18'
+
+    test_property_values_bad_property_type = PropertyValues()
+    test_property_values_bad_property_type.address = '345 Unit Street, North Balk, NSW 3222'
+    test_property_values_bad_property_type.property_type = 'Bawahah'
+    test_property_values_bad_property_type.rent_type = 'Private Rooms'
+    test_property_values_bad_property_type.description = 'Description 3'
+    test_property_values_bad_property_type.parking = True
+    test_property_values_bad_property_type.rent_cost = 1000.05
+    test_property_values_bad_property_type.date_constructed = '2018-05-20'
+
+    test_property_values_bad_rent_type = PropertyValues()
+    test_property_values_bad_rent_type.address = '345 Unit Street, North Balk, NSW 3222'
+    test_property_values_bad_rent_type.property_type = 'Landed House'
+    test_property_values_bad_rent_type.rent_type = 'Sopedew'
+    test_property_values_bad_rent_type.description = 'Description 3'
+    test_property_values_bad_rent_type.parking = True
+    test_property_values_bad_rent_type.rent_cost = 1000.05
+    test_property_values_bad_rent_type.date_constructed = '2018-05-20'
+
+    test_property_values_bad_rent_prop_type = PropertyValues()
+    test_property_values_bad_rent_prop_type.address = '345 Unit Street, North Balk, NSW 3222'
+    test_property_values_bad_rent_prop_type.property_type = 'Bawahah'
+    test_property_values_bad_rent_prop_type.rent_type = 'Sopedew'
+    test_property_values_bad_rent_prop_type.description = 'Description 3'
+    test_property_values_bad_rent_prop_type.parking = True
+    test_property_values_bad_rent_prop_type.rent_cost = 1000.05
+    test_property_values_bad_rent_prop_type.date_constructed = '2018-05-20'
+
     test_fake_token = ''.join(random.choices(
         string.ascii_letters + string.digits, k=16))
 
@@ -86,9 +124,11 @@ class TestPropertyBlueprint(BaseTestCase):
         self.user_register = RegisterUser(self)
         self.add_property = AddProperty(self)
         self.add_property_bad_token = AddPropertyBadToken(self)
+        self.add_property_bad_item_type = AddPropertyBadItemType(self)
         self.edit_property = EditProperty(self)
         self.edit_property_bad_token = EditPropertyBadToken(self)
         self.edit_nonexistent_property = EditNonexistentProperty(self)
+        self.edit_property_bad_item_type = EditPropertyBadItemType(self)
         self.get_property = GetProperty(self)
         self.get_nonexistent_property = GetNonexistentProperty(self)
         self.get_property_bad_token = GetPropertyBadToken(self)
@@ -113,12 +153,19 @@ class TestPropertyBlueprint(BaseTestCase):
 
     def test_add_property_with_empty_description(self):
         ''' Test adding new property with empty description '''
+        with self.client:
+            data_user = self.user_register.run(self.test_user_values)
+            self.add_property.run(data_user['auth_token'],
+                                  self.test_property_empty_description_values)
 
-    def test_add_property_with_property_type(self):
-        ''' Test adding new property with unknown property type '''
-
-    def test_add_property_with_rent_type(self):
-        ''' Test adding new property with unknown rent type '''
+    def test_add_property_with_bad_property_and_type(self):
+        ''' Test adding new property with unknown property and rent type '''
+        with self.client:
+            data_user = self.user_register.run(self.test_user_values)
+            self.add_property_bad_item_type.run(
+                data_user['auth_token'],
+                self.test_property_values_bad_rent_prop_type
+            )
 
     def test_get_property(self):
         ''' Test getting property data '''
@@ -212,10 +259,32 @@ class TestPropertyBlueprint(BaseTestCase):
             data_user = self.user_register.run(self.test_user_values)
             data_property = self.add_property.run(data_user['auth_token'],
                                                   self.test_property_values)
-            self.edit_nonexistent_property.run(
+            self.edit_property_bad_token.run(
                 self.test_fake_token,
                 data_property['data']['property'][0]['id'],
                 self.test_property_values_2
+            )
+
+    def test_edit_property_with_empty_description(self):
+        ''' Test editing new property with empty description '''
+        with self.client:
+            data_user = self.user_register.run(self.test_user_values)
+            data_property = self.add_property.run(data_user['auth_token'],
+                                  self.test_property_values_3)
+            self.edit_property.run(data_user['auth_token'],
+                                  data_property['data']['property'][0]['id'],
+                                  self.test_property_empty_description_values)
+
+    def test_edit_property_with_bad_property_and_rent_type(self):
+        ''' Test editing new property with unknown rent type '''
+        with self.client:
+            data_user = self.user_register.run(self.test_user_values)
+            data_property = self.add_property.run(data_user['auth_token'],
+                                                  self.test_property_values)
+            self.edit_property_bad_item_type.run(
+                data_user['auth_token'],
+                data_property['data']['property'][0]['id'],
+                self.test_property_values_bad_rent_prop_type
             )
 
     def test_edit_property_not_belonging_to_user(self):

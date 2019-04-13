@@ -46,7 +46,7 @@ class RegisterAPI(MethodView):
                     'auth_token': auth_token.decode()
                 }
                 return make_response(jsonify(response)), 201
-            except Exception as e:
+            except Exception as ex:
                 response = {
                     'status': 'fail',
                     'message': 'Some error occurred. Please try again.'

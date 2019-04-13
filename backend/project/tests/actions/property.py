@@ -90,6 +90,16 @@ class AddPropertyBadToken(AddProperty):
         pass
 
 
+class AddPropertyBadItemType(AddProperty):
+    def check_response(self, data, resp):
+        self.test_cls.assertEqual(data['status'], 'fail')
+        self.test_cls.assertEqual(resp.content_type, 'application/json')
+        self.test_cls.assertEqual(resp.status_code, 400)
+
+    def check_db_state(self, test_values: PropertyValues, data):
+        pass
+
+
 class GetProperty(ActionABC, ApiCheckActionABC):
     ''' Get property '''
     def __init__(self, test_cls: BaseTestCase):
@@ -150,7 +160,7 @@ class GetNonexistentProperty(GetProperty):
     def check_response(self, test_values: PropertyValues, data, resp):
         self.test_cls.assertEqual(data['status'], 'fail')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
-        self.test_cls.assertEqual(resp.status_code, 404)
+        self.test_cls.assertEqual(resp.status_code, 400)
 
 
 class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
@@ -241,10 +251,14 @@ class EditNonexistentProperty(EditProperty):
     def check_response(self, data, resp):
         self.test_cls.assertEqual(data['status'], 'fail')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
-        self.test_cls.assertEqual(resp.status_code, 404)
+        self.test_cls.assertEqual(resp.status_code, 400)
 
     def check_db_state(self, property_id, test_values: PropertyValues):
         pass
+
+
+class EditPropertyBadItemType(EditNonexistentProperty):
+    pass
 
 
 class DeleteProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
@@ -289,7 +303,7 @@ class DeleteNonexistentProperty(DeleteProperty):
     def check_response(self, data, resp):
         self.test_cls.assertEqual(data['status'], 'fail')
         self.test_cls.assertEqual(resp.content_type, 'application/json')
-        self.test_cls.assertEqual(resp.status_code, 404)
+        self.test_cls.assertEqual(resp.status_code, 400)
 
     def check_db_state(self, property_id):
         pass

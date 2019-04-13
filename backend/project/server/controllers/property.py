@@ -7,6 +7,10 @@ from sqlalchemy import and_
 from project.server.models.property import Property, PropertyType, RentType
 from project.server.models.auth import User
 from project.server import db
+from project.server.error_handling.exceptions import ItemTypeError
+
+ITEM_NOT_EXISTS_MSG = 'Property not found'
+UNKNOWN_ITEM_TYPE = 'Porperty type or Rent type unknown'
 
 property_blueprint = Blueprint('property', __name__)
 
@@ -56,6 +60,8 @@ class PropertyAPI(MethodView):
 
 
 class ManageOnePropertyAPI(MethodView):
+    return_res = None
+
     def get_foriegn_ids(self):
         # Get user, rent and property id all once to reduce database
         # requests
@@ -70,6 +76,13 @@ class ManageOnePropertyAPI(MethodView):
         ).filter(
             RentType.value == self.post_data.get('rent_type')
         ).first()
+
+        if foriegn_ids_set == None:
+            self.return_res = jsonify({
+                'status': 'fail',
+                'message': UNKNOWN_ITEM_TYPE
+            }), 400
+            raise ItemTypeError(UNKNOWN_ITEM_TYPE)
 
         self.foriegn_ids = {
             'user_account_id': foriegn_ids_set[0],
@@ -86,8 +99,8 @@ class ManageOnePropertyAPI(MethodView):
     def success_result(self):
         raise NotImplementedError()
     
-    def fail_result(self):
-        return jsonify({
+    def fail_result(self, ex):
+        self.return_res = jsonify({
             'status': 'fail',
             'message': 'Some error occurred. Please try again.'
         }), 403
@@ -95,24 +108,17 @@ class ManageOnePropertyAPI(MethodView):
     def post(self):
         self.post_data = request.get_json()
         try:
-            self.get_foriegn_ids()
-
-            if self.foriegn_ids is None:
-                raise ValueError('property_type or rent_type from post data '
-                                 'is unknown.')
-            
+            self.get_foriegn_ids()            
             self.get_cur_property()
             self.update_property()
             db.session.commit()
 
-            return self.success_result() 
-        except ValueError as ex:
-            print(self.post_data.get('property_type'))
-            print(self.post_data.get('rent_type'))
+            self.success_result()
         except Exception as ex:
-            pass
+            if self.return_res == None:
+                self.fail_result(ex)
 
-        return self.fail_result()
+        return self.return_res
 
 
 class PropertyAddAPI(ManageOnePropertyAPI):
@@ -139,7 +145,7 @@ class PropertyAddAPI(ManageOnePropertyAPI):
         db.session.flush()
 
     def success_result(self):
-        return jsonify({
+        self.return_res = jsonify({
             'status': 'success',
             'data': {
                 'property': [{ 'id': self.cur_property.id }]
@@ -149,9 +155,17 @@ class PropertyAddAPI(ManageOnePropertyAPI):
 
 class PropertyEditAPI(ManageOnePropertyAPI):
     def get_cur_property(self):
-        self.cur_property = db.session.query(Property).filter(
-            Property.id == int(self.post_data.get('id'))
-        ).first()
+        self.cur_property = db.session.query(Property).filter(and_(           
+            Property.id == int(self.post_data.get('id')),
+            Property.account_id == self.foriegn_ids['user_account_id']
+        )).first()
+
+        if self.cur_property is None:
+            self.return_res = jsonify({
+                'status': 'fail',
+                'message': ITEM_NOT_EXISTS_MSG
+            }), 400
+            raise ValueError(ITEM_NOT_EXISTS_MSG)
 
     def update_property(self):
         self.cur_property.address = self.post_data.get('address')
@@ -174,7 +188,7 @@ class PropertyEditAPI(ManageOnePropertyAPI):
         )
 
     def success_result(self):
-        return jsonify({ 'status': 'success' }), 200
+        self.return_res = jsonify({ 'status': 'success' }), 200
 
 
 class PropertyGetAPI(MethodView):
@@ -191,9 +205,18 @@ class PropertyGetAPI(MethodView):
             ).outerjoin(
                 RentType,
                 Property.rent_type_id == RentType.id
-            ).filter(
-                Property.id == int(self.post_data.get('id'))
-            ).first()
+            ).outerjoin(
+                User,
+                Property.account_id == User.account_id
+            ).filter(and_(
+                Property.id == int(self.post_data.get('id')),
+                User.id == int(session.pop('user_id', None))
+            )).first()
+            if self.cur_property is None:
+                return jsonify({
+                    'status': 'fail',
+                    'message': ITEM_NOT_EXISTS_MSG
+                }), 400
             return jsonify({
                 'status': 'success',
                 'data': {
@@ -212,8 +235,8 @@ class PropertyGetAPI(MethodView):
                     }]
                 }
             }), 200
-        except Exception as e:
-            print(e)
+        except Exception as ex:
+            print(ex)
         return jsonify({ 'status': 'fail' }), 401
 
 
@@ -221,10 +244,19 @@ class PropertyDeleteAPI(MethodView):
     def post(self):
         self.post_data = request.get_json()
         try:
-            cur_property = db.session.query(Property).filter(
-                Property.id == int(self.post_data.get('id'))
-            ).first()
-            cur_property.is_deleted = True
+            self.cur_property = db.session.query(Property).outerjoin(
+                User,
+                Property.account_id == User.account_id
+            ).filter(and_(
+                Property.id == int(self.post_data.get('id')),
+                User.id == int(session.pop('user_id', None))
+            )).first()
+            if self.cur_property is None:
+                return jsonify({
+                    'status': 'fail',
+                    'message': ITEM_NOT_EXISTS_MSG
+                }), 400
+            self.cur_property.is_deleted = True
             return jsonify({ 'status': 'success' }), 200
         except:
             pass
