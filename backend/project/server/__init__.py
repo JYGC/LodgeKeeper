@@ -26,3 +26,9 @@ from project.server.controllers.auth import auth_blueprint
 app.register_blueprint(auth_blueprint)
 from project.server.controllers.property import property_blueprint
 app.register_blueprint(property_blueprint)
+from project.server.controllers.tenancy import tenancy_blueprint
+app.register_blueprint(tenancy_blueprint)
+from project.server.controllers.tenant_bill import tenant_bill_blueprint
+app.register_blueprint(tenant_bill_blueprint)
+from project.server.controllers.notification import notification_blueprint
+app.register_blueprint(notification_blueprint)

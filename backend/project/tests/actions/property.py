@@ -3,12 +3,13 @@ from typing import Union
 
 from project.server import db
 from project.tests.base import BaseTestCase
-from project.tests.actions.abcs import (ActionABC, ApiCheckActionABC,
-                                        DBCheckActionABC)
+from project.tests.actions.abcs import (IAction, IApiCheckAction,
+                                        IDbCheckAction)
 from project.tests.values.property_values import PropertyValues
-from project.server.models.property import Property, PropertyType, RentType
+from project.server.models.property import Property
+from project.server.models.type_values import PropertyType, RentType
 
-class AddProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
+class AddProperty(IAction, IApiCheckAction, IDbCheckAction):
     ''' Add new property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
@@ -100,7 +101,7 @@ class AddPropertyBadItemType(AddProperty):
         pass
 
 
-class GetProperty(ActionABC, ApiCheckActionABC):
+class GetProperty(IAction, IApiCheckAction):
     ''' Get property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
@@ -163,7 +164,7 @@ class GetNonexistentProperty(GetProperty):
         self.test_cls.assertEqual(resp.status_code, 400)
 
 
-class EditProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
+class EditProperty(IAction, IApiCheckAction, IDbCheckAction):
     ''' edit property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
@@ -261,7 +262,7 @@ class EditPropertyBadItemType(EditNonexistentProperty):
     pass
 
 
-class DeleteProperty(ActionABC, ApiCheckActionABC, DBCheckActionABC):
+class DeleteProperty(IAction, IApiCheckAction, IDbCheckAction):
     ''' Delete property '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
@@ -309,7 +310,7 @@ class DeleteNonexistentProperty(DeleteProperty):
         pass
 
 
-class ListProperty(ActionABC, ApiCheckActionABC):
+class ListProperty(IAction, IApiCheckAction):
     ''' Get list of property belonging to user '''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)

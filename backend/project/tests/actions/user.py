@@ -1,11 +1,11 @@
 import json
 
 from project.tests.base import BaseTestCase
-from project.tests.actions.abcs import (ActionABC, ApiCheckActionABC,
-                                        DBCheckActionABC)
+from project.tests.actions.abcs import (IAction, IApiCheckAction,
+                                        IDbCheckAction)
 from project.tests.values.auth_values import UserValues
 
-class RegisterUser(ActionABC, ApiCheckActionABC, DBCheckActionABC):
+class RegisterUser(IAction, IApiCheckAction, IDbCheckAction):
     ''' Perform test user registration'''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)
@@ -49,7 +49,7 @@ class RegisterDuplicateUser(RegisterUser):
         self.test_cls.assertEqual(resp.status_code, 202)
 
 
-class LoginUser(ActionABC, ApiCheckActionABC, DBCheckActionABC):
+class LoginUser(IAction, IApiCheckAction, IDbCheckAction):
     ''' Perform test user login'''
     def __init__(self, test_cls: BaseTestCase):
         super().__init__(test_cls)

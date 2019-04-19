@@ -5,7 +5,6 @@ property/server/models/property.py
 import datetime
 
 from project.server import db
-from project.server.models.abcs import TypeModel
 
 
 class Property(db.Model):
@@ -30,21 +29,3 @@ class Property(db.Model):
     def __init__(self):
         self.date_created = datetime.datetime.now()
         self.is_deleted = False
-
-
-class PropertyType(db.Model, TypeModel):
-    """ Different property types: Landed House or Apartment """
-    __tablename__ = 'property_type'
-    type_values = { 1: 'Landed House', 2: 'Apartment' }
-
-    def __init__(self, id, value):
-        super().__init__(id=id, value=value)
-
-
-class RentType(db.Model, TypeModel):
-    """ Different rent type: Whole Property or Private Rooms """
-    __tablename__ = 'rent_type'
-    type_values = { 1: 'Whole Property', 2: 'Private Rooms' }
-
-    def __init__(self, id, value):
-        super().__init__(id=id, value=value)

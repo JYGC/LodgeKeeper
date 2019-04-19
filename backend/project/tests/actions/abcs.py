@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from project.tests.base import BaseTestCase
 from project.tests.values.auth_values import UserValues
 
-class ActionABC(ABC):
+
+class IAction(ABC):
     def __init__(self, test_cls: BaseTestCase):
         self.test_cls = test_cls
 
@@ -11,7 +12,8 @@ class ActionABC(ABC):
     def run(self, test_values):
         ...
 
-class ApiCheckActionABC(ABC):
+
+class IApiCheckAction(ABC):
     @abstractmethod
     def api_request(self, test_values):
         ...
@@ -20,7 +22,8 @@ class ApiCheckActionABC(ABC):
     def check_response(self, data, resp):
         ...
 
-class DBCheckActionABC(ABC):
+
+class IDbCheckAction(ABC):
     @abstractmethod
     def check_db_state(self, test_values, data):
         ...

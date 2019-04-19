@@ -4,7 +4,8 @@ from flask import Blueprint, request, make_response, jsonify, session
 from flask.views import MethodView
 from sqlalchemy import and_
 
-from project.server.models.property import Property, PropertyType, RentType
+from project.server.models.property import Property
+from project.server.models.type_values import PropertyType, RentType
 from project.server.models.auth import User
 from project.server import db
 from project.server.error_handling.exceptions import ItemTypeError

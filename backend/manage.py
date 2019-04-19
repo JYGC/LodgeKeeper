@@ -72,8 +72,13 @@ def drop_db():
 @manager.command
 def update_default_data():
     '''Make sure all type data (PropertyType, RentType etc.) are up to date'''
-    models.property.PropertyType.update_type_data()
-    models.property.RentType.update_type_data()
+    models.type_values.PropertyType.update_type_data()
+    models.type_values.RentType.update_type_data()
+    models.type_values.PaymentTerms.update_type_data()
+    models.type_values.PaymentMethod.update_type_data()
+    models.type_values.TenancyStatus.update_type_data()
+    models.type_values.TenantBillType.update_type_data()
+    models.type_values.TenantBillStatus.update_type_data()
 
 
 if __name__ == '__main__':
