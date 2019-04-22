@@ -67,16 +67,6 @@ class PaymentMethod(db.Model, IValueModel):
         super().__init__(id=id, value=value)
 
 
-class TenancyStatus(db.Model, IValueModel):
-    ''' Model to manage tenancy status '''
-    __tablename__ = 'tenancy_status'
-    type_values = { 1: 'Active', 2: 'Ended', 3: 'Terminated', 4: 'Abandoned',
-                    5: 'Suspended' }
-
-    def __init__(self, id, value):
-        super().__init__(id=id, value=value)
-
-
 class TenantBillType(db.Model, IValueModel):
     ''' Model to manage tenanc bill type '''
     __tablename__ = 'tenant_bill_type'

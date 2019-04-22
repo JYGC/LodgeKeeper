@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e024e35e657db07f96c140eeb729c7a7425e0b17ebf74d25f2e1dee2bbf0d0a7"
+            "sha256": "afd39b4adb355ed2a09cec9df6850a637d3dfc660357a55203de12721ad57edd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,10 +18,10 @@
     "default": {
         "alembic": {
             "hashes": [
-                "sha256:0932bed55a4546b8aa6f59b8ad8b92b0161e7bd46adc538d50afb1c96b3571c1"
+                "sha256:40b9a619aa5f25ea1e1508adcda88b33704ef28e02c9cfa6471e5c772ecf0829"
             ],
             "index": "pypi",
-            "version": "==0.8.9"
+            "version": "==1.0.9"
         },
         "bcrypt": {
             "hashes": [
@@ -247,6 +247,13 @@
             ],
             "index": "pypi",
             "version": "==1.4.2"
+        },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb",
+                "sha256:c89805f6f4d64db21ed966fda138f8a5ed7a4fdbc1a8ee329ce1b74e3c74da9e"
+            ],
+            "version": "==2.8.0"
         },
         "python-editor": {
             "hashes": [

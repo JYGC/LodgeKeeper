@@ -1,5 +1,4 @@
 import json
-from typing import Union
 
 from project.server import db
 from project.tests.base import BaseTestCase

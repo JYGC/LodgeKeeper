@@ -26,9 +26,9 @@ class PaypalDetails(db.Model, IPaymentDetails):
     message = db.Column(db.String(1024))
 
 
-class BankTransferDetails(db.Model, IPaymentDetails):
+class BankDetails(db.Model, IPaymentDetails):
     ''' Model for bank details '''
-    __tablename__ = 'bank_transfer_details'
+    __tablename__ = 'bank_details'
     bank_name = db.Column(db.String(255))
     account_number = db.Column(db.String(255))
     bsb_number = db.Column(db.String(7))

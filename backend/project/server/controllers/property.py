@@ -1,6 +1,6 @@
 import decimal
 from datetime import datetime
-from flask import Blueprint, request, make_response, jsonify, session
+from flask import Blueprint, request, jsonify, session
 from flask.views import MethodView
 from sqlalchemy import and_
 

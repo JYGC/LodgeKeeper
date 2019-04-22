@@ -19,7 +19,6 @@ class BaseTestCase(TestCase):
         models.type_values.RentType.update_type_data()
         models.type_values.PaymentTerms.update_type_data()
         models.type_values.PaymentMethod.update_type_data()
-        models.type_values.TenancyStatus.update_type_data()
         models.type_values.TenantBillType.update_type_data()
         models.type_values.TenantBillStatus.update_type_data()
         db.session.commit()
