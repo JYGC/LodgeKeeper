@@ -1,7 +1,12 @@
+'''
+Tenancy and TenancyHistory models
+'''
+
 import datetime
 from sqlalchemy.ext.declarative import declared_attr
 
 from project.server import db
+from project.server.models.type_values import PaymentTerms
 
 
 class ITenancyValues():
@@ -42,6 +47,16 @@ class Tenancy(db.Model, ITenancyId, ITenancyValues):
     __tablename__ = 'tenancy'
     date_created = db.Column(db.DateTime, nullable=False)
 
+    def set_rent_cost(self, rent_cost, payment_terms_id):
+        self.rent_cost = rent_cost
+        self.payment_terms_id = payment_terms_id
+        if PaymentTerms.type_values[payment_terms_id] == 'Monthly':
+            self.rent_cost_per_week = round(rent_cost * 12 * 7 / 365, 2)
+        elif PaymentTerms.type_values[payment_terms_id] == 'Fortnightly':
+            self.rent_cost_per_week = round(rent_cost * 7 / 14, 2)
+        elif PaymentTerms.type_values[payment_terms_id] == 'Weekly':
+            self.rent_cost_per_week = rent_cost
+
     def __init__(self):
         self.date_created = datetime.datetime.now()
         self.is_deleted = False
@@ -57,6 +72,7 @@ class TenancyHistory(db.Model, ITenancyValues):
 
     def __init__(self, updated_tenancy: (ITenancyId, ITenancyValues)=None):
         if updated_tenancy != None:
+            self.tenancy_id = updated_tenancy.id
             self.start_date = updated_tenancy.start_date
             self.end_date = updated_tenancy.end_date
             self.address = updated_tenancy.address

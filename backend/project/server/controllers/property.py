@@ -1,4 +1,5 @@
 import decimal
+import traceback
 from datetime import datetime
 from flask import Blueprint, request, jsonify, session
 from flask.views import MethodView
@@ -8,7 +9,7 @@ from project.server.models.property import Property
 from project.server.models.type_values import PropertyType, RentType
 from project.server.models.auth import User
 from project.server import db
-from project.server.error_handling.exceptions import ItemTypeError
+from project.server.error_handling.exceptions import LodgeKeeperExpection
 
 ITEM_NOT_EXISTS_MSG = 'Property not found'
 UNKNOWN_ITEM_TYPE = 'Porperty type or Rent type unknown'
@@ -83,7 +84,7 @@ class ManageOnePropertyAPI(MethodView):
                 'status': 'fail',
                 'message': UNKNOWN_ITEM_TYPE
             }), 400
-            raise ItemTypeError(UNKNOWN_ITEM_TYPE)
+            raise LodgeKeeperExpection('Test', 'Test', 'Test')
 
         self.foriegn_ids = {
             'user_account_id': foriegn_ids_set[0],
@@ -116,6 +117,7 @@ class ManageOnePropertyAPI(MethodView):
 
             self.success_result()
         except Exception as ex:
+            print(traceback.format_exc())
             if self.return_res == None:
                 self.fail_result(ex)
 

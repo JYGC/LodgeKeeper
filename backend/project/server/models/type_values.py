@@ -1,3 +1,7 @@
+'''
+Type Value models and interfaces
+'''
+
 from project.server import db
 
 
@@ -31,6 +35,14 @@ class IValueModel():
         db.session.commit()
 
 
+class IValueModelSelectableIds(IValueModel):
+    @classmethod
+    def get_value_id(self, value):
+        return dict(zip(self.type_values.values(), self.type_values.keys()))[
+            value
+        ]
+
+
 class PropertyType(db.Model, IValueModel):
     ''' Model to manage property types '''
     __tablename__ = 'property_type'
@@ -52,7 +64,7 @@ class RentType(db.Model, IValueModel):
 class PaymentTerms(db.Model, IValueModel):
     ''' Model to manage payment type '''
     __tablename__ = 'payment_terms'
-    type_values = { 1: 'Monthly', 2: 'Fortnightly', 3: 'Lump sum' }
+    type_values = { 1: 'Weekly', 2: 'Monthly', 3: 'Fortnightly' }
 
     def __init__(self, id, value):
         super().__init__(id=id, value=value)
@@ -61,13 +73,13 @@ class PaymentTerms(db.Model, IValueModel):
 class PaymentMethod(db.Model, IValueModel):
     ''' Model to manage payment methods '''
     __tablename__ = 'payment_method'
-    type_values = { 1: 'Bank Transfer', 2: 'PayPal', 3: 'Cash' }
+    type_values = { 1: 'Cash', 2: 'PayPal', 3: 'Bank Transfer' }
 
     def __init__(self, id, value):
         super().__init__(id=id, value=value)
 
 
-class TenantBillType(db.Model, IValueModel):
+class TenantBillType(db.Model, IValueModelSelectableIds):
     ''' Model to manage tenanc bill type '''
     __tablename__ = 'tenant_bill_type'
     type_values = { 1: 'other', 2: 'rent' }
@@ -76,10 +88,10 @@ class TenantBillType(db.Model, IValueModel):
         super().__init__(id=id, value=value)
 
 
-class TenantBillStatus(db.Model, IValueModel):
+class TenantBillStatus(db.Model, IValueModelSelectableIds):
     ''' Model to manage tenant bill status '''
     __tablename__ = 'tenant_bill_status'
-    type_values = { 1: 'other', 2: 'rent' }
+    type_values = { 1: 'unpaid', 2: 'paid', 3: 'waivered' }
 
     def __init__(self, id, value):
         super().__init__(id=id, value=value)

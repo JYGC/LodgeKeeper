@@ -1,6 +1,8 @@
 import json
+from datetime import datetime
 
 from project.server import db
+from project.server import app
 from project.tests.base import BaseTestCase
 from project.tests.actions.abcs import (IAction, IApiCheckAction,
                                         IDbCheckAction)
@@ -81,10 +83,14 @@ class AddNewTenancy(IAction, IApiCheckAction, IDbCheckAction):
             Tenancy.payment_method_id == PaymentMethod.id
         ).filter(Tenancy.id == self.data['data']['tenancy'][0]['id']).all()
         self.test_cls.assertEqual(len(tenancy_list), 1)
-        self.test_cls.assertEqual(tenancy_list[0].Tenancy.start_date,
-                                  self.test_values.tenancy.start_date)
-        self.test_cls.assertEqual(tenancy_list[0].Tenancy.end_date,
-                                  self.test_values.tenancy.end_date)
+        self.test_cls.assertEqual(
+            tenancy_list[0].Tenancy.start_date.strftime(app.config['DATE_FMT']),
+            self.test_values.tenancy.start_date
+        )
+        self.test_cls.assertEqual(
+            tenancy_list[0].Tenancy.end_date.strftime(app.config['DATE_FMT']),
+            self.test_values.tenancy.end_date
+        )
         self.test_cls.assertEqual(tenancy_list[0].Tenancy.address,
                                   self.test_values.tenancy.address)
         self.test_cls.assertEqual(tenancy_list[0].RentType.value,
@@ -143,7 +149,7 @@ class AddNewTenancyWithCashDetails(AddNewTenancy):
         ).filter(CashDetails.account_id == self.account_id).all()
         self.test_cls.assertEqual(len(payment_details), 1)
         self.test_cls.assertEqual(
-            payment_details.description,
+            payment_details[0].description,
             self.test_values.payment_details.description
         )
 
@@ -156,14 +162,14 @@ class AddNewTenancyWithPaypalDetails(AddNewTenancy):
         ).filter(PaypalDetails.account_id == self.account_id).all()
         self.test_cls.assertEqual(len(payment_details), 1)
         self.test_cls.assertEqual(
-            payment_details.description,
+            payment_details[0].description,
             self.test_values.payment_details.description
         )
-        self.test_cls.assertEqual(payment_details.paypal_email,
-                                  self.test_values.payment_details.paypal_email)
-        self.test_cls.assertEqual(payment_details.reason,
+        self.test_cls.assertEqual(payment_details[0].email,
+                                  self.test_values.payment_details.email)
+        self.test_cls.assertEqual(payment_details[0].reason,
                                   self.test_values.payment_details.reason)
-        self.test_cls.assertEqual(payment_details.message,
+        self.test_cls.assertEqual(payment_details[0].message,
                                   self.test_values.payment_details.message)
 
 
@@ -175,17 +181,17 @@ class AddNewTenancyWithBankDetails(AddNewTenancy):
         ).filter(BankDetails.account_id == self.account_id).all()
         self.test_cls.assertEqual(len(payment_details), 1)
         self.test_cls.assertEqual(
-            payment_details.description,
+            payment_details[0].description,
             self.test_values.payment_details.description
         )
-        self.test_cls.assertEqual(payment_details.bank_name,
+        self.test_cls.assertEqual(payment_details[0].bank_name,
                                   self.test_values.payment_details.bank_name)
-        self.test_cls.assertEqual(payment_details.account_name,
+        self.test_cls.assertEqual(payment_details[0].account_name,
                                   self.test_values.payment_details.account_name)
-        self.test_cls.assertEqual(payment_details.bsb_number,
+        self.test_cls.assertEqual(payment_details[0].bsb_number,
                                   self.test_values.payment_details.bsb_number)
         self.test_cls.assertEqual(
-            payment_details.account_number,
+            payment_details[0].account_number,
             self.test_values.payment_details.account_number
         )
 

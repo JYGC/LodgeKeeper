@@ -14,7 +14,7 @@ class PayPalDetails(IPaymentDetails):
                  message=None):
         super().__init__(description)
         self.payment_method = 'PayPal'
-        self.paypal_email = paypal_email
+        self.email = paypal_email
         self.reason = reason
         self.message = message
 
@@ -28,4 +28,3 @@ class BankTransfer(IPaymentDetails):
         self.account_name = account_name
         self.bsb_number = bsb_number
         self.account_number = account_number
-        

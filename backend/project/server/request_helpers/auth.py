@@ -1,7 +1,7 @@
 '''
-Documentation
+Auth API endpoints
 '''
-from flask import request, make_response, jsonify, session
+from flask import request, jsonify, session
 
 from project.server import app
 from project.server.models.auth import User
@@ -36,11 +36,10 @@ class AuthTokenValidator():
         auth_header = request.headers.get('Authorization')
         if not isinstance(auth_header, str) or not auth_header.startswith(
                 'Bearer '):
-            return make_response(jsonify({
+            return jsonify({
                 'status': 'fail',
                 'message': self.testing_err_msg(self.malformed_token_err_msg)
-            })), 401
-
+            }), 401
         try:
             self.auth_token = auth_header.split(" ")[1]
             self.decoded_result = User.decode_auth_token(self.auth_token)
@@ -49,17 +48,17 @@ class AuthTokenValidator():
                 session['auth_token'] = self.auth_token
                 # Successful authentication
                 return None
-            return make_response(jsonify({
+            return jsonify({
                 'status': 'fail',
                 'message': self.testing_err_msg(self.decoded_result)
-            })), 401
+            }), 401
         except (IndexError, AttributeError):
-            return make_response(jsonify({
+            return jsonify({
                 'status': 'fail',
                 'message': self.testing_err_msg(self.valid_token_err_msg)
-            })), 401
+            }), 401
 
-        return make_response(jsonify({
+        return jsonify({
             'status': 'fail',
             'message': self.testing_err_msg(self.unknown_err_msg)
-        })), 401
+        }), 401

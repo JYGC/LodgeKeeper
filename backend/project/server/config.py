@@ -1,4 +1,6 @@
-# project/server/config.py
+'''
+project/server/config.py
+'''
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -17,6 +19,8 @@ class BaseConfig:
         '/auth/register',
         '/auth/login'
     ]
+    DATE_FMT = '%Y-%m-%d'
+    LETTER_DATE_FMT = '%d %b %Y'
 
 
 class DevelopmentConfig(BaseConfig):

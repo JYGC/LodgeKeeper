@@ -1,3 +1,7 @@
+'''
+Tenancy API endpoint test cases
+'''
+
 import unittest
 
 from project.tests.base import BaseTestCase
@@ -39,7 +43,7 @@ class TestAddTenancyAPI(BaseTestCase):
             user_data = self.register_user.run(
                 values.auth_values.test_user_values['user_1']
             )
-            self.add_new_tenancy_with_cash.run(
+            self.add_new_tenancy_with_paypal.run(
                 user_data['auth_token'],
                 values.tenancy_values.test_new_tenancy_values['with_paypal']
             )
@@ -50,7 +54,7 @@ class TestAddTenancyAPI(BaseTestCase):
             user_data = self.register_user.run(
                 values.auth_values.test_user_values['user_1']
             )
-            self.add_new_tenancy_with_cash.run(
+            self.add_new_tenancy_with_bank.run(
                 user_data['auth_token'],
                 values.tenancy_values.test_new_tenancy_values[
                     'with_bank_transfer'

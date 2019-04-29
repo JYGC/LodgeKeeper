@@ -1,4 +1,6 @@
-# manage.py
+'''
+manage.py
+'''
 
 
 import os
@@ -30,7 +32,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def test():
-    """Runs the unit tests without test coverage."""
+    ''' Runs the unit tests without test coverage. '''
     tests = unittest.TestLoader().discover('project/tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -40,7 +42,7 @@ def test():
 
 @manager.command
 def cov():
-    """Runs the unit tests with coverage."""
+    ''' Runs the unit tests with coverage. '''
     tests = unittest.TestLoader().discover('project/tests')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -59,19 +61,19 @@ def cov():
 
 @manager.command
 def create_db():
-    """Creates the db tables."""
+    ''' Creates the db tables. '''
     db.create_all()
 
 
 @manager.command
 def drop_db():
-    """Drops the db tables."""
+    ''' Drops the db tables. '''
     db.drop_all()
 
 
 @manager.command
-def update_default_data():
-    '''Make sure all type data (PropertyType, RentType etc.) are up to date'''
+def prefill_db():
+    ''' Update all defualt data '''
     models.type_values.PropertyType.update_type_data()
     models.type_values.RentType.update_type_data()
     models.type_values.PaymentTerms.update_type_data()

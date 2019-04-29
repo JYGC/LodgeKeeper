@@ -7,7 +7,7 @@ from .payment_details import (IPaymentDetails, CashDetails, PayPalDetails,
 class TenancyValues():
     def __init__(self, start_date=None, end_date=None, address=None,
                  rent_type=None, room_name=None, notes=None,
-                 payment_terms=None):
+                 payment_terms=None, rent_cost=None):
         self.start_date = start_date
         self.end_date = end_date
         self.address = address
@@ -15,6 +15,7 @@ class TenancyValues():
         self.room_name = room_name
         self.notes = notes
         self.payment_terms = payment_terms
+        self.rent_cost = rent_cost
 
 
 class NewTenancyValues():
@@ -40,8 +41,10 @@ test_new_tenancy_values = {
                 datetime.datetime.now() + datetime.timedelta(days=254)
             ).strftime("%Y-%m-%d"),
             address='123 Goldstern Drive, Tyron, QLD 5666',
-            rent_type='Private Rooms', room_name='Room 4',
-            payment_terms='Monthly'
+            rent_type='Private Rooms',
+            room_name='Room 4',
+            payment_terms='Monthly',
+            rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
         CashDetails('Payment for rent Balls and colt'),
@@ -58,7 +61,8 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
-            payment_terms='Monthly'
+            payment_terms='Monthly',
+            rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
         PayPalDetails(description='Payment for rent Balls and colt',
@@ -77,7 +81,8 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
-            payment_terms='Monthly'
+            payment_terms='Monthly',
+            rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
         BankTransfer(description='Payment for rent Balls and colt',
@@ -96,7 +101,8 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Room Private',
             room_name='Room 4',
-            payment_terms='Month'
+            payment_terms='Month',
+            rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
         CashDetails('Payment for rent Balls and colt'),

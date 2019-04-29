@@ -1,2 +1,3 @@
-class ItemTypeError(Exception):
-    pass
+class LodgeKeeperExpection(Exception):
+    def __init__(self, code_location, error_type, message):
+        pass
