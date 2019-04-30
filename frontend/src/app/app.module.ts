@@ -11,25 +11,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { StatusComponent } from './components/status/status.component';
 import { LoginRedirect } from './services/login-redirect.service';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { TenancyListAllComponent } from './components/tenancy-list-all/tenancy-list-all.component';
 import { TenantbillEditComponent
 } from './components/tenantbill-edit/tenantbill-edit.component';
-import { PropertyComponent } from './components/property/property.component';
-import { PropertyAddComponent
-} from './components/property-add/property-add.component';
-import { PropertyEditComponent
-} from './components/property-edit/property-edit.component';
-import { LocationAddComponent
-} from './components/location-add/location-add.component';
-import { LocationEditComponent
-} from './components/location-edit/location-edit.component';
-import { ExtrachargeComponent
-} from './components/extracharge/extracharge.component';
-import { ExtrachargeAddComponent
-} from './components/extracharge-add/extracharge-add.component';
-import { ExtrachargeEditComponent
-} from './components/extracharge-edit/extracharge-edit.component';
-import { TenancyComponent } from './components/tenancy/tenancy.component';
 import { TenancyAddComponent
 } from './components/tenancy-add/tenancy-add.component';
 import { TenancyEditComponent
@@ -52,24 +36,15 @@ import { routing } from './app.routing';
     LoginComponent,
     RegisterComponent,
     StatusComponent,
-    DashboardComponent,
+    TenancyListAllComponent,
     TenantbillEditComponent,
-    PropertyComponent,
-    PropertyAddComponent,
-    PropertyEditComponent,
-    ExtrachargeComponent,
-    ExtrachargeAddComponent,
-    ExtrachargeEditComponent,
-    TenancyComponent,
     TenancyAddComponent,
     TenancyEditComponent,
     TenantComponent,
     TenantAddComponent,
     TenantEditComponent,
     NavbarLayoutComponent,
-    NavbarHeaderComponent,
-    LocationAddComponent,
-    LocationEditComponent
+    NavbarHeaderComponent
   ],
   imports: [
     BrowserModule,

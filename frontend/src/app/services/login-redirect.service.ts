@@ -11,7 +11,7 @@ export class LoginRedirect implements CanActivate {
     if (token) {
       return this.auth.ensureAuthenticated(token)
       .then((response) => {
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigateByUrl('/tenancy/list-all');
         return false;
       })
       .catch((error) => {

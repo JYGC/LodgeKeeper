@@ -7,19 +7,11 @@ import { NavbarLayoutComponent
 } from './components/_layout/navbar-layout/navbar-layout.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { TenancyListAllComponent 
+} from './components/tenancy-list-all/tenancy-list-all.component';
 import { StatusComponent } from './components/status/status.component';
-import { PropertyComponent } from './components/property/property.component';
 import { TenantbillEditComponent
 } from './components/tenantbill-edit/tenantbill-edit.component';
-import { PropertyAddComponent
-} from './components/property-add/property-add.component';
-import { PropertyEditComponent
-} from './components/property-edit/property-edit.component';
-import { LocationAddComponent
-} from './components/location-add/location-add.component';
-import { LocationEditComponent
-} from './components/location-edit/location-edit.component';
 
 const appRoutes: Routes = [
   {
@@ -38,35 +30,14 @@ const appRoutes: Routes = [
     canActivate: [EnsureAuthenticated],
     children: [
       {
-        path: 'dashboard',
-        component: DashboardComponent
+        path: 'tenancy/list-all',
+        component: TenancyListAllComponent
       },
       {
         path: 'tenantbill/edit',
         component: TenantbillEditComponent
-      },
-      {
-        path: 'property',
-        component: PropertyComponent
-      },
-      {
-        path: 'property/add',
-        component: PropertyAddComponent
-      },
-      {
-        path: 'property/edit',
-        component: PropertyEditComponent
-      },
-      {
-        path: 'location/add',
-        component: LocationAddComponent
-      },
-      {
-        path: 'location/edit',
-        component: LocationEditComponent
       }
-    ]// ,
-    // canActivate: [EnsureAuthenticated]
+    ]
   },
   {
     path: 'status',

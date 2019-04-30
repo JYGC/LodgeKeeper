@@ -1,6 +1,4 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark navigtion-header">
-  <a class="navbar-brand" [routerLink]="['/dashboard']"
-   routerLinkActive="router-link-active">Dashboard</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse"
    data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
    aria-label="Toggle navigation">
@@ -9,21 +7,27 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/property']"
+        <a class="nav-link" [routerLink]="['/tenancy/list-all']"
          routerLinkActive="router-link-active">
-          Manage Property
+          List All Tenancies
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/tenancy']"
+        <a class="nav-link" [routerLink]="['/tenancy/new']"
          routerLinkActive="router-link-active">
-          Manage Tenancy
+          Create New Tenancy
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/tenant']"
+        <a class="nav-link" [routerLink]="['/settings']"
          routerLinkActive="router-link-active">
-          Manage Tenants
+          Account Settings
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/logout']"
+         routerLinkActive="router-link-active">
+          Logout
         </a>
       </li>
     </ul>
