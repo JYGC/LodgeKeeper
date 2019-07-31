@@ -73,13 +73,8 @@ def drop_db():
 
 @manager.command
 def prefill_db():
-    ''' Update all defualt data '''
-    models.type_values.PropertyType.update_type_data()
-    models.type_values.RentType.update_type_data()
-    models.type_values.PaymentTerms.update_type_data()
-    models.type_values.PaymentMethod.update_type_data()
-    models.type_values.TenantBillType.update_type_data()
-    models.type_values.TenantBillStatus.update_type_data()
+    ''' Update all default data '''
+    models.type_values.InitializeTypeValue.update_default_data()
 
 
 if __name__ == '__main__':

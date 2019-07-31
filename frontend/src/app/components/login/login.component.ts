@@ -16,9 +16,10 @@ export class LoginComponent {
   onLogin(): void {
     this.auth.login(this.user).then((user) => {
       localStorage.setItem('token', user.auth_token);
-      this.router.navigateByUrl('/dashboard');
-    }).catch((err) => {
-      console.log(err);
-    });
+      this.router.navigateByUrl('/tenancy/list-all');
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }

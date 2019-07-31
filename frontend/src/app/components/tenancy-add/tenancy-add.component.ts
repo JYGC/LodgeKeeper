@@ -12,4 +12,8 @@ export class TenancyAddComponent implements OnInit {
   ngOnInit() {
   }
 
+  finishFunction() {
+    alert(1);
+  }
+
 }

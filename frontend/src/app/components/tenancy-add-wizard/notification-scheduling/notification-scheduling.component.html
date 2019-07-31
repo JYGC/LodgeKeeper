@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col">
+    <div class="table-container">
+      <table class="table tenant-list">
+        <thead>
+          <th>
+            Notifications
+          </th>
+          <th>
+            Days in advance of rent due date
+          </th>
+          <th>
+          </th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let notificationField of newTenancyMaker.notificationFields; let i = index">
+            <td>{{i}}</td>
+            <td>
+              <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-outline-primary"
+                 [attr.id]="notificationField.key" ngbDropdownToggle>
+                  {{notificationField.value}}
+                </button>
+                <div class="dropdown-menu" ngbDropdownMenu
+                  [attr.aria-labelledby]="notificationField.key">
+                  <button *ngFor="let day of days; let j = index"
+                   (click)="newTenancyMaker.setNotification(i, days[j])"
+                   ngbDropdownItem>
+                    {{days[j]}}
+                  </button>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="btn btn-normal"
+               (click)="newTenancyMaker.deleteNotification(i)">
+                Delete
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <div class="btn btn-normal"
+           (click)="newTenancyMaker.addNotification()">
+            Add Notification Schedule
+          </div>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

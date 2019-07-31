@@ -11,5 +11,4 @@ export class NavbarLayoutComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

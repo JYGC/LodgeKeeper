@@ -8,12 +8,11 @@ from flask.views import MethodView
 from flask import Blueprint, request, jsonify, session
 from sqlalchemy import and_
 
-from project.server import db
-from project.server import app
+from project.server import db, app
 from project.server.models.auth import User
 from project.server.models.tenancy import Tenancy, TenancyHistory
 from project.server.models.tenant import Tenant
-from project.server.models.payment_details import PaymentDetailsPresenter
+from project.server.models.payment_details import PaymentDetailsUpdater
 from project.server.models.notifications import Notification
 from project.server.models.tenant_bill import (RentSchedulerSelector,
                                                TenantBill,
@@ -111,15 +110,15 @@ class AddNewTenancyAPI(MethodView):
             ) for tenant_name in self.request_json['tenants']])
 
             # Update or create account payment details
-            pd_presenter = PaymentDetailsPresenter(
+            pd_updater = PaymentDetailsUpdater(
                 db.session,
                 self.request_json['payment_details']['payment_method'],
                 self.foriegn_ids['user_account_id']
             )
-            payment_details = pd_presenter.dict_to_payment_details(
+            payment_details = pd_updater.dict_to_payment_details(
                 self.request_json['payment_details']
             )
-            if pd_presenter.payment_detail_is_new:
+            if pd_updater.payment_detail_is_new:
                 db.session.add(payment_details)
 
             # Add notifictions

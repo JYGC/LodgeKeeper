@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col">
+    <label>Property Address</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <input type="text" [(ngModel)]="newTenancyMaker.tenancy.address">
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <label>Rent type</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-primary" id="rentType"
+        ngbDropdownToggle>{{getSelectedRentTypeValue()}}</button>
+      <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="rentType">
+        <button *ngFor="let rentType of rentTypeList | keyvalue"
+         (click)="setRentType(rentType.key)" ngbDropdownItem>
+         {{rentType.value}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <label>Room name</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <input type="text" [(ngModel)]="newTenancyMaker.tenancy.room_name">
+  </div>
+</div>

@@ -1,29 +1,23 @@
-from abc import ABC, abstractmethod
-
 from project.tests.base import BaseTestCase
 from project.tests.values.auth_values import UserValues
 
 
-class IAction(ABC):
+class IAction():
     def __init__(self, test_cls: BaseTestCase):
         self.test_cls = test_cls
 
-    @abstractmethod
     def run(self, test_values):
-        ...
+        pass
 
 
-class IApiCheckAction(ABC):
-    @abstractmethod
+class IApiCheckAction():
     def api_request(self, test_values):
-        ...
+        pass
 
-    @abstractmethod
     def check_response(self, data, resp):
-        ...
+        pass
 
 
-class IDbCheckAction(ABC):
-    @abstractmethod
+class IDbCheckAction():
     def check_db_state(self, test_values, data):
-        ...
+        pass

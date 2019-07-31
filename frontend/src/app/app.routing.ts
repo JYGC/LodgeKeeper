@@ -9,6 +9,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { TenancyListAllComponent 
 } from './components/tenancy-list-all/tenancy-list-all.component';
+import { TenancyAddComponent
+} from './components/tenancy-add/tenancy-add.component';
 import { StatusComponent } from './components/status/status.component';
 import { TenantbillEditComponent
 } from './components/tenantbill-edit/tenantbill-edit.component';
@@ -32,6 +34,10 @@ const appRoutes: Routes = [
       {
         path: 'tenancy/list-all',
         component: TenancyListAllComponent
+      },
+      {
+        path: 'tenancy/add',
+        component: TenancyAddComponent
       },
       {
         path: 'tenantbill/edit',

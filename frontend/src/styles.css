@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~font-awesome/css/font-awesome";
+@import "~open-iconic/font/css/open-iconic-bootstrap.css";
+
 @import "./themes/basic.css";

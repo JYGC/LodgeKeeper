@@ -19,7 +19,7 @@ class PayPalDetails(IPaymentDetails):
         self.message = message
 
 
-class BankTransfer(IPaymentDetails):
+class BankDetails(IPaymentDetails):
     def __init__(self, description=None, bank_name=None, account_name=None,
                  bsb_number=None, account_number=None):
         super().__init__(description)
@@ -28,3 +28,12 @@ class BankTransfer(IPaymentDetails):
         self.account_name = account_name
         self.bsb_number = bsb_number
         self.account_number = account_number
+
+test_payment_details = {
+    'cash': CashDetails('Paid every week'),
+    'paypal': PayPalDetails('Tenant suggested using payment',
+                            'jttff1@gmail.com', 'Rent payment', 'Rent payment'),
+    'banktransfer': BankDetails('Payment every month, Bank details provided',
+                                'Commonwealth Bank', 'Junying Chen', '356-398',
+                                '739837409832740')
+}

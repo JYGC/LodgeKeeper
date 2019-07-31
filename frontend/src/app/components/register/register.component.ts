@@ -19,8 +19,9 @@ export class RegisterComponent {
     this.auth.register(this.userAccount).then((response) => {
       localStorage.setItem('token', response.auth_token);
       this.router.navigateByUrl('/status');
-    }).catch((err) => {
-      console.log(err);
-    });
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }

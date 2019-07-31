@@ -1,58 +1,31 @@
-<div class="row">
-    <div class="col">
-        <div class="header-panel text-right">
-            <!-- Add new tenant not in list below -->
-            <div class="btn btn-normal">Add New Tenant</div>
-        </div>
-        <p>List of Tenants</p>
-        <div class="table-container">
-            <!-- Table will use checkboxes (check tenants that you what to
-                include in tenancy), add contact tenant checkbox -->
-            <table class="table">
-                <thead>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>
-                        <div class="btn btn-normal">Edit</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Dawn</td>
-                        <td>Keane</td>
-                        <td>@dkn</td>
-                        <td>
-                        <div class="btn btn-normal">Edit</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Raymond</td>
-                        <td>Barrying</td>
-                        <td>@rby</td>
-                        <td>
-                        <div class="btn btn-normal">Edit</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-  <div class="col">
-    <div class="btn btn-normal">Create Tenancy</div>
-    <div class="btn btn-normal">Cancel</div>
-  </div>
-</div>
+<aw-wizard>
+  <aw-wizard-step stepTitle="Tenant Names">
+    <app-tenant-names></app-tenant-names>
+    <div class="btn btn-normal" awNextStep>Next Step</div>
+  </aw-wizard-step>
+  <aw-wizard-step stepTitle="Start and End Date" awOptionalStep>
+    <app-start-end-date></app-start-end-date>
+    <div class="btn btn-normal" awPreviousStep>Go to previous step</div>
+    <div class="btn btn-normal" awNextStep>Go to next step</div>
+  </aw-wizard-step>
+  <aw-wizard-step stepTitle="Rent Payment" awOptionalStep>
+    <app-rent-payment></app-rent-payment>
+    <div class="btn btn-normal" awPreviousStep>Go to previous step</div>
+    <div class="btn btn-normal" awNextStep>Go to next step</div>
+  </aw-wizard-step>
+  <aw-wizard-step stepTitle="Property Details" awOptionalStep>
+    <app-property-details></app-property-details>
+    <div class="btn btn-normal" awPreviousStep>Go to previous step</div>
+    <div class="btn btn-normal" awNextStep>Go to next step</div>
+  </aw-wizard-step>
+  <aw-wizard-step stepTitle="Notification Scheduling" awOptionalStep>
+    <app-notification-scheduling></app-notification-scheduling>
+    <div class="btn btn-normal" awPreviousStep>Go to previous step</div>
+    <div class="btn btn-normal" awNextStep>Go to next step</div>
+  </aw-wizard-step>
+  <aw-wizard-step stepTitle="Confirmation">
+    <app-confirmation></app-confirmation>
+    <div class="btn btn-normal" awPreviousStep>Previous Step</div>
+    <div class="btn btn-normal" (click)="finishFunction()">Finish</div>
+  </aw-wizard-step>
+</aw-wizard>

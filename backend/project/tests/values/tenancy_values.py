@@ -1,7 +1,7 @@
 from typing import List
 
-from .payment_details import (IPaymentDetails, CashDetails, PayPalDetails,
-                              BankTransfer)
+from .payment_details_values import (IPaymentDetails, CashDetails,
+                                     PayPalDetails, BankDetails)
 
 
 class TenancyValues():
@@ -43,7 +43,7 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
-            payment_terms='Monthly',
+            payment_terms='Per month',
             rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
@@ -61,7 +61,7 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
-            payment_terms='Monthly',
+            payment_terms='Per month',
             rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
@@ -81,11 +81,11 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
-            payment_terms='Monthly',
+            payment_terms='Per month',
             rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],
-        BankTransfer(description='Payment for rent Balls and colt',
+        BankDetails(description='Payment for rent Balls and colt',
                      bank_name='Duetches Limited', account_name='Rogay Peirius',
                      bsb_number='345876', account_number='1236843023'),
         [3, 4]
@@ -101,7 +101,7 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Room Private',
             room_name='Room 4',
-            payment_terms='Month',
+            payment_terms='Per month',
             rent_cost=865.99
         ),
         ['James Balls', 'Helena Colts'],

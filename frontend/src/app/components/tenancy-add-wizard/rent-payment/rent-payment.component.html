@@ -1,0 +1,123 @@
+<div class="row">
+  <div class="col">
+    <label>Payment Terms:</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-primary" id="paymentTerms"
+       ngbDropdownToggle>{{getCurPaymentTypeValue()}}</button>
+      <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="paymentTerms">
+        <button *ngFor="let paymentTerm of paymentTermsList | keyvalue"
+         (click)="setPaymentType(paymentTerm.key)" ngbDropdownItem>
+          {{paymentTerm.value}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <label>Rent Cost (AUD):</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    $ <input type="number" /><label
+        [hidden]="newTenancyMaker.tenancy.payment_terms == '0'">
+      {{getCurPaymentTypeValue()}}
+    </label>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <label>Payment Method:</label>
+  </div>
+</div>
+<div class="row">
+    <div class="col">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="paymentMethods"
+          ngbDropdownToggle>{{getCurPaymentMethodValue()}}</button>
+        <div class="dropdown-menu" ngbDropdownMenu
+         aria-labelledby="paymentMethods">
+          <button *ngFor="let paymentMethod of paymentMethodsList | keyvalue"
+            (click)="setPaymentMethods(paymentMethod.key)" ngbDropdownItem>
+            {{paymentMethod.value}}
+          </button>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="row">
+  <div class="col payment-method-details bank-transfer"
+   [hidden]="getCurPaymentMethodValue() != 'Bank Transfer'">
+    <div class="row">
+      <div class="col">
+        <label>Bank Name:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Account Name:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>BSB Number:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Account Number:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Description:</label>
+        <input type="text">
+      </div>
+    </div>
+  </div>
+  <div class="col payment-method-details paypal"
+   [hidden]="getCurPaymentMethodValue() != 'PayPal'">
+    <div class="row">
+      <div class="col">
+        <label>Email:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Reason:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Message:</label>
+        <input type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Description:</label>
+        <input type="text">
+      </div>
+    </div>
+  </div>
+  <div class="col payment-method-details cash"
+  [hidden]="getCurPaymentMethodValue() != 'Cash'">
+    <div class="row">
+      <div class="col">
+        <label>Description:</label>
+        <input type="text">
+      </div>
+    </div>
+  </div>
+</div>

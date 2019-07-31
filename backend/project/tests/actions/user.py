@@ -5,6 +5,21 @@ from project.tests.actions.abcs import (IAction, IApiCheckAction,
                                         IDbCheckAction)
 from project.tests.values.auth_values import UserValues
 
+
+class RegisterUserApiAction():
+    @staticmethod
+    def run(test_cls, test_user_values):
+        ''' register user via api '''
+        return test_cls.client.post(
+            '/auth/register',
+            data=json.dumps(dict(email=test_user_values.email,
+                                 password=test_user_values.password,
+                                 address=test_user_values.address,
+                                 phone=test_user_values.phone)),
+            content_type='application/json',
+        )
+
+
 class RegisterUser(IAction, IApiCheckAction, IDbCheckAction):
     ''' Perform test user registration'''
     def __init__(self, test_cls: BaseTestCase):

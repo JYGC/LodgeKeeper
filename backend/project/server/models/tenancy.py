@@ -50,11 +50,11 @@ class Tenancy(db.Model, ITenancyId, ITenancyValues):
     def set_rent_cost(self, rent_cost, payment_terms_id):
         self.rent_cost = rent_cost
         self.payment_terms_id = payment_terms_id
-        if PaymentTerms.type_values[payment_terms_id] == 'Monthly':
+        if PaymentTerms.type_values[payment_terms_id] == 'Per month':
             self.rent_cost_per_week = round(rent_cost * 12 * 7 / 365, 2)
-        elif PaymentTerms.type_values[payment_terms_id] == 'Fortnightly':
+        elif PaymentTerms.type_values[payment_terms_id] == 'Per fortnight':
             self.rent_cost_per_week = round(rent_cost * 7 / 14, 2)
-        elif PaymentTerms.type_values[payment_terms_id] == 'Weekly':
+        elif PaymentTerms.type_values[payment_terms_id] == 'Per week':
             self.rent_cost_per_week = rent_cost
 
     def __init__(self):
