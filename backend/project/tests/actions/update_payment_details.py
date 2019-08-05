@@ -18,7 +18,7 @@ class AddPaymentDetailsAction():
         ))
 
 
-class CheckPaymentDetailsAction():
+class ChkPaymentDetailsAction():
     payment_detail_class = None
 
     @classmethod
@@ -34,7 +34,7 @@ class CheckPaymentDetailsAction():
         pass
 
 
-class CheckCashDetailsAction(CheckPaymentDetailsAction):
+class ChkCashDetailsAction(ChkPaymentDetailsAction):
     payment_detail_class = CashDetails
     
     @staticmethod
@@ -45,7 +45,7 @@ class CheckCashDetailsAction(CheckPaymentDetailsAction):
                              test_payment_details.description)
 
 
-class CheckPayPalDetailsAction(CheckPaymentDetailsAction):
+class ChkPayPalDetailsAction(ChkPaymentDetailsAction):
     payment_detail_class = PaypalDetails
     
     @staticmethod
@@ -62,7 +62,7 @@ class CheckPayPalDetailsAction(CheckPaymentDetailsAction):
                              test_payment_details.message)
 
 
-class CheckBankDetailsAction(CheckPaymentDetailsAction):
+class ChkBankDetailsAction(ChkPaymentDetailsAction):
     payment_detail_class = BankDetails
     
     @staticmethod
@@ -80,40 +80,164 @@ class CheckBankDetailsAction(CheckPaymentDetailsAction):
                              test_payment_details.bsb_number)
         test_cls.assertEqual(db_payment_details[0].account_number,
                              test_payment_details.account_number)
+                             
 
-
-class CheckPaymentDetailsFetcherAllAction():
-    @classmethod
-    def run(self, test_cls, account_id, test_payment_details,
-            db_payment_details_dict):
-        pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
-        payment_details_dict = pd_fetcher.payment_details_to_dict()
-
-        self._test_cash_assertions(test_cls, test_payment_details['cash'],
-                                   payment_details_dict['Cash'])
-        self._test_paypal_assertions(test_cls, test_payment_details['paypal'],
-                                     payment_details_dict['PayPal'])
-        self._test_banktransfer_assertions(
-            test_cls,
-            test_payment_details['banktransfer'],
-            payment_details_dict['Bank Transfer']
-        )
-    
+class ChkPaymentDetailsFetcher():
     @staticmethod
     def _test_cash_assertions(test_cls, test_cash_details,
                               cash_details_dict):
-        test_cls.assertIn(test_cash_details.payment_method,
-                          cash_details_dict)
-        #test_cls.assertEqual()
-    
+        pass
+
     @staticmethod
     def _test_paypal_assertions(test_cls, test_paypal_details,
                                 paypal_details_dict):
-        test_cls.assertIn(test_paypal_details.payment_method,
-                          paypal_details_dict)
-    
+        pass
+
     @staticmethod
     def _test_banktransfer_assertions(test_cls, test_banktransfer_details,
                                       banktransfer_details_dict):
-        test_cls.assertIn(test_banktransfer_details.payment_method,
-                          banktransfer_details_dict)
+        pass
+
+    @classmethod
+    def run(self, test_cls, account_id, test_payment_details,
+            payment_details_dict):
+        self._test_cash_assertions(test_cls, test_payment_details['Cash'],
+                                   payment_details_dict['Cash'])
+        self._test_paypal_assertions(test_cls, test_payment_details['PayPal'],
+                                     payment_details_dict['PayPal'])
+        self._test_banktransfer_assertions(
+            test_cls,
+            test_payment_details['Bank Transfer'],
+            payment_details_dict['Bank Transfer']
+        )
+
+
+class ChkPaymentDetailsFetcherWithCashPart():
+    @staticmethod
+    def _test_cash_assertions(test_cls, test_cash_details,
+                              cash_details_dict):
+        test_cls.assertEqual(test_cash_details.description,
+                             cash_details_dict['description'])
+
+
+class ChkPaymentDetailsFetcherWithPayPalPart():
+    @staticmethod
+    def _test_paypal_assertions(test_cls, test_paypal_details,
+                                paypal_details_dict):
+        test_cls.assertEqual(test_paypal_details.description,
+                             paypal_details_dict['description'])
+        test_cls.assertEqual(test_paypal_details.email,
+                             paypal_details_dict['email'])
+        test_cls.assertEqual(test_paypal_details.reason,
+                             paypal_details_dict['reason'])
+        test_cls.assertEqual(test_paypal_details.message,
+                             paypal_details_dict['message'])
+
+
+class ChkPaymentDetailsFetcherWithBankTransPart():
+    @staticmethod
+    def _test_banktransfer_assertions(test_cls, test_banktransfer_details,
+                                      banktransfer_details_dict):
+        test_cls.assertEqual(test_banktransfer_details.description,
+                             banktransfer_details_dict['description'])
+        test_cls.assertEqual(test_banktransfer_details.bank_name,
+                             banktransfer_details_dict['bank_name'])
+        test_cls.assertEqual(test_banktransfer_details.account_name,
+                             banktransfer_details_dict['account_name'])
+        test_cls.assertEqual(test_banktransfer_details.bsb_number,
+                             banktransfer_details_dict['bsb_number'])
+        test_cls.assertEqual(test_banktransfer_details.account_number,
+                             banktransfer_details_dict['account_number'])
+
+
+class ChkPaymentDetailsFetcherWithoutCashPart():
+    @staticmethod
+    def _test_cash_assertions(test_cls, test_cash_details,
+                              cash_details_dict):
+        test_cls.assertIsNone(cash_details_dict)
+
+
+class ChkPaymentDetailsFetcherWithoutPayPalPart():
+    @staticmethod
+    def _test_paypal_assertions(test_cls, test_paypal_details,
+                                paypal_details_dict):
+        test_cls.assertIsNone(paypal_details_dict)
+
+
+class ChkPaymentDetailsFetcherWithoutBankTransPart():
+    @staticmethod
+    def _test_banktransfer_assertions(test_cls, test_banktransfer_details,
+                                      banktransfer_details_dict):
+        test_cls.assertIsNone(banktransfer_details_dict)
+
+
+class ChkPaymentDetailsFetcherAllAction(
+    ChkPaymentDetailsFetcherWithCashPart,
+    ChkPaymentDetailsFetcherWithPayPalPart,
+    ChkPaymentDetailsFetcherWithBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherNoneAction(
+    ChkPaymentDetailsFetcherWithoutCashPart,
+    ChkPaymentDetailsFetcherWithoutPayPalPart,
+    ChkPaymentDetailsFetcherWithoutBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherWithoutCash(
+    ChkPaymentDetailsFetcherWithoutCashPart,
+    ChkPaymentDetailsFetcherWithPayPalPart,
+    ChkPaymentDetailsFetcherWithBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherWithoutPaypal(
+    ChkPaymentDetailsFetcherWithCashPart,
+    ChkPaymentDetailsFetcherWithoutPayPalPart,
+    ChkPaymentDetailsFetcherWithBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherWithoutBankTrans(
+    ChkPaymentDetailsFetcherWithCashPart,
+    ChkPaymentDetailsFetcherWithPayPalPart,
+    ChkPaymentDetailsFetcherWithoutBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherCashOnly(
+    ChkPaymentDetailsFetcherWithCashPart,
+    ChkPaymentDetailsFetcherWithoutPayPalPart,
+    ChkPaymentDetailsFetcherWithoutBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherPayPalOnly(
+    ChkPaymentDetailsFetcherWithoutCashPart,
+    ChkPaymentDetailsFetcherWithPayPalPart,
+    ChkPaymentDetailsFetcherWithoutBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass
+
+
+class ChkPaymentDetailsFetcherBankTransOnly(
+    ChkPaymentDetailsFetcherWithoutCashPart,
+    ChkPaymentDetailsFetcherWithoutPayPalPart,
+    ChkPaymentDetailsFetcherWithBankTransPart,
+    ChkPaymentDetailsFetcher
+):
+    pass

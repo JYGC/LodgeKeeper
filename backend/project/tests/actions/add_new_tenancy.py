@@ -202,7 +202,7 @@ class AddNewTenancyBadRequest(AddNewTenancy):
         self.test_cls.assertEqual(self.data['status'], 'fail')
         self.test_cls.assertEqual(self.response.content_type,
                                   'application/json')
-        self.test_cls.assertEqual(self.response.status_code, 400)
+        self.test_cls.assertEqual(self.response.status_code, 401)
     
     def check_db_state(self):
         pass

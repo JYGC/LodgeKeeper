@@ -130,5 +130,10 @@ class PaymentDetailsFetcher(IPaymentDetailsClasses):
     def payment_details_to_dict(self):
         payment_details_dict: Dict[str, Dict[str, str]] = {}
         for name, payment_detail in self.account_payment_details.items():
-            payment_details_dict[name] = payment_detail.values_to_dict()
+            payment_details_dict[
+                name
+            ] = payment_detail.values_to_dict() if isinstance(
+                payment_detail,
+                IPaymentDetails
+            ) else None
         return payment_details_dict

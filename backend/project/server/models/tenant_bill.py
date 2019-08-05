@@ -170,11 +170,13 @@ class WeeklyScheduler(IDayBasedScheduler):
 
 class RentSchedulerSelector():
     def __init__(self, tenancy: (ITenancyId, ITenancyValues)):
-        if PaymentTerms.type_values[tenancy.payment_terms_id] == 'Fortnightly':
+        if PaymentTerms.type_values[
+            tenancy.payment_terms_id
+        ] == 'Per fortnight':
             self.bill_scheduler = FortnightlyScheduler(tenancy)
-        elif PaymentTerms.type_values[tenancy.payment_terms_id] == 'Weekly':
+        elif PaymentTerms.type_values[tenancy.payment_terms_id] == 'Per week':
             self.bill_scheduler = WeeklyScheduler(tenancy)
-        elif PaymentTerms.type_values[tenancy.payment_terms_id] == 'Monthly':
+        elif PaymentTerms.type_values[tenancy.payment_terms_id] == 'Per month':
             self.bill_scheduler = MonthlyScheduler(tenancy)
         else:
             raise Exception

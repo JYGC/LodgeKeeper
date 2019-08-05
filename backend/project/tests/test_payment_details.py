@@ -8,9 +8,17 @@ from project.tests.base import BaseTestCase
 from project.tests.actions.user import RegisterUser, RegisterUserApiAction
 from project.tests.actions.update_payment_details import (
     AddPaymentDetailsAction,
-    CheckCashDetailsAction,
-    CheckPayPalDetailsAction,
-    CheckBankDetailsAction
+    ChkCashDetailsAction,
+    ChkPayPalDetailsAction,
+    ChkBankDetailsAction,
+    ChkPaymentDetailsFetcherAllAction,
+    ChkPaymentDetailsFetcherNoneAction,
+    ChkPaymentDetailsFetcherWithoutCash,
+    ChkPaymentDetailsFetcherWithoutPaypal,
+    ChkPaymentDetailsFetcherWithoutBankTrans,
+    ChkPaymentDetailsFetcherCashOnly,
+    ChkPaymentDetailsFetcherPayPalOnly,
+    ChkPaymentDetailsFetcherBankTransOnly
 )
 from project.server import db
 from project.server.models.auth import User
@@ -45,15 +53,15 @@ class TestPaymentDetailsUpdater(BaseTestCase):
             account_id = register_user_get_account_id(self)
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'cash'
+                    'Cash'
                 ].payment_method,
                 account_id,
-                values.payment_details_values.test_payment_details['cash']
+                values.payment_details_values.test_payment_details['Cash']
             )
-            CheckCashDetailsAction.run(
+            ChkCashDetailsAction.run(
                 self,
                 account_id,
-                values.payment_details_values.test_payment_details['cash']
+                values.payment_details_values.test_payment_details['Cash']
             )
         
     def test_add_paypal_payment_details(self):
@@ -62,15 +70,15 @@ class TestPaymentDetailsUpdater(BaseTestCase):
             account_id = register_user_get_account_id(self)
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'paypal'
+                    'PayPal'
                 ].payment_method,
                 account_id,
-                values.payment_details_values.test_payment_details['paypal']
+                values.payment_details_values.test_payment_details['PayPal']
             )
-            CheckPayPalDetailsAction.run(
+            ChkPayPalDetailsAction.run(
                 self,
                 account_id,
-                values.payment_details_values.test_payment_details['paypal']
+                values.payment_details_values.test_payment_details['PayPal']
             )
     
     def test_add_banktransfer_payment_details(self):
@@ -79,18 +87,18 @@ class TestPaymentDetailsUpdater(BaseTestCase):
             account_id = register_user_get_account_id(self)
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'banktransfer'
+                    'Bank Transfer'
                 ].payment_method,
                 account_id,
                 values.payment_details_values.test_payment_details[
-                    'banktransfer'
+                    'Bank Transfer'
                 ]
             )
-            CheckBankDetailsAction.run(
+            ChkBankDetailsAction.run(
                 self,
                 account_id,
                 values.payment_details_values.test_payment_details[
-                    'banktransfer'
+                    'Bank Transfer'
                 ]
             )
 
@@ -106,33 +114,38 @@ class TestPaymentDetailsFetcher(BaseTestCase):
             account_id = register_user_get_account_id(self)
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'cash'
+                    'Cash'
                 ].payment_method,
                 account_id,
                 values.payment_details_values.test_payment_details[
-                    'cash'
+                    'Cash'
                 ]
             )
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'paypal'
+                    'PayPal'
                 ].payment_method,
                 account_id,
                 values.payment_details_values.test_payment_details[
-                    'paypal'
+                    'PayPal'
                 ]
             )
             AddPaymentDetailsAction.run(
                 values.payment_details_values.test_payment_details[
-                    'banktransfer'
+                    'Bank Transfer'
                 ].payment_method,
                 account_id,
                 values.payment_details_values.test_payment_details[
-                    'banktransfer'
+                    'Bank Transfer'
                 ]
             )
-
             pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherAllAction.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
 
     def test_fetch_payment_details_all_missing(self):
@@ -140,36 +153,165 @@ class TestPaymentDetailsFetcher(BaseTestCase):
         with self.client:
             account_id = register_user_get_account_id(self)
             pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherNoneAction.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_cash_missing(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ]
+            )
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherWithoutCash.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_paypal_missing(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ]
+            )
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherWithoutPaypal.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_banktransfer_missing(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ]
+            )
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherWithoutBankTrans.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_cash_only(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Cash'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherCashOnly.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_paypal_only(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'PayPal'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherPayPalOnly.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
     def test_fetch_payment_details_banktransfer_only(self):
         '''  '''
         with self.client:
-            self.assertTrue(False)
+            account_id = register_user_get_account_id(self)
+            AddPaymentDetailsAction.run(
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ].payment_method,
+                account_id,
+                values.payment_details_values.test_payment_details[
+                    'Bank Transfer'
+                ]
+            )
+            pd_fetcher = PaymentDetailsFetcher(db.session, account_id)
+            ChkPaymentDetailsFetcherBankTransOnly.run(
+                self,
+                account_id,
+                values.payment_details_values.test_payment_details,
+                pd_fetcher.payment_details_to_dict()
+            )
 
 if __name__ == '__main__':
     unittest.main()

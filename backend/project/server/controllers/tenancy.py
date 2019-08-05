@@ -45,7 +45,6 @@ class AddNewTenancyAPI(MethodView):
             if not request.is_json:
                 raise Exception
             self.request_json = request.get_json()
-
             # Get required foriegn keys. If not successful, throw error
             foreign_ids_set = db.session.query(
                 User.account_id,
@@ -76,7 +75,6 @@ class AddNewTenancyAPI(MethodView):
                 'payment_terms_id': foreign_ids_set[2],
                 'payment_method_id': foreign_ids_set[3]
             }
-
             # Add Tenancy and TenancyHistory to database
             new_tenancy = Tenancy()
             new_tenancy.start_date = datetime.strptime(
@@ -108,7 +106,6 @@ class AddNewTenancyAPI(MethodView):
                 tenant_name,
                 new_tenancy.id
             ) for tenant_name in self.request_json['tenants']])
-
             # Update or create account payment details
             pd_updater = PaymentDetailsUpdater(
                 db.session,
@@ -126,7 +123,6 @@ class AddNewTenancyAPI(MethodView):
                 notification_days,
                 new_tenancy.id
             ) for notification_days in self.request_json['notifications']])
-
             # Add tenant_bills and tenant_bill_histories
             rent_schedule_selector = RentSchedulerSelector(new_tenancy)
             tenant_bills = rent_schedule_selector.get_tenant_bills()
@@ -183,6 +179,7 @@ save_tenancy_enddate_view = SaveTenancyEndDateAPI.as_view(
     'save_tenancy_enddate'
 )
 delete_tenancy_view = DeleteTenancyAPI.as_view('delete_property')
+
 
 # Add rules for API Endpoints
 tenancy_blueprint.add_url_rule(

@@ -30,10 +30,10 @@ class BankDetails(IPaymentDetails):
         self.account_number = account_number
 
 test_payment_details = {
-    'cash': CashDetails('Paid every week'),
-    'paypal': PayPalDetails('Tenant suggested using payment',
+    'Cash': CashDetails('Paid every week'),
+    'PayPal': PayPalDetails('Tenant suggested using payment',
                             'jttff1@gmail.com', 'Rent payment', 'Rent payment'),
-    'banktransfer': BankDetails('Payment every month, Bank details provided',
+    'Bank Transfer': BankDetails('Payment every month, Bank details provided',
                                 'Commonwealth Bank', 'Junying Chen', '356-398',
                                 '739837409832740')
 }

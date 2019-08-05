@@ -79,10 +79,11 @@ class TenantBillStatus(db.Model, IValueModelSelectableIds):
     def __init__(self, id, value):
         super().__init__(id=id, value=value)
 
+
 class InitializeTypeValue():
     @staticmethod
     def update_default_data():
-        value_model_list: List[IValueModel] = [
+        value_model_list = [
             PaymentMethod,
             PaymentTerms,
             PropertyType,
@@ -91,16 +92,16 @@ class InitializeTypeValue():
             TenantBillType
         ]
         for value_model in value_model_list:
+            # Create {id: value} dictionary to track changes in existing values
             type_list = value_model.query.all()
             type_dict = dict(zip([cur_type.id for cur_type in type_list], 
-                                type_list))
+                                 type_list))
             for key, value in value_model.type_values.items():
+                # If type exists just update value else add value
                 if key in type_dict:
-                    # If type exists just update value
                     type_dict[key].value = value
                 else:
                     db.session.add(value_model(key, value))
-                
                 if key in type_dict:
                     type_dict.pop(key)
             for id in type_dict.keys():
