@@ -130,8 +130,8 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(resp_login.content_type == 'application/json')
             self.assertEqual(resp_login.status_code, 200)
             # valid token logout
-            response = self.client.post(
-                '/auth/logout',
+            response = self.client.get(
+                '/user/logout',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
@@ -169,8 +169,8 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertEqual(resp_login.status_code, 200)
             # invalid token logout
             time.sleep(6)
-            response = self.client.post(
-                '/auth/logout',
+            response = self.client.get(
+                '/user/logout',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
@@ -213,8 +213,8 @@ class TestAuthBlueprint(BaseTestCase):
             db.session.add(blacklist_token)
             db.session.commit()
             # blacklisted valid token logout
-            response = self.client.post(
-                '/auth/logout',
+            response = self.client.get(
+                '/user/logout',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()

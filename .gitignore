@@ -1,4 +1,5 @@
 .metadata/
+angular-frontend/
 frontend/node_modules/
 backend/tmp/
 backend/migrations/

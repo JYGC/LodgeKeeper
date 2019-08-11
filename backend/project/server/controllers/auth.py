@@ -118,7 +118,7 @@ class LogoutAPI(MethodView):
     """
     Logout Resource
     """
-    def post(self):
+    def get(self):
         response = None
         try:
             auth_token = session.pop('auth_token', None)
@@ -161,7 +161,7 @@ auth_blueprint.add_url_rule(
     methods=['GET']
 )
 auth_blueprint.add_url_rule(
-    '/auth/logout',
+    '/user/logout',
     view_func=logout_view,
-    methods=['POST']
+    methods=['GET']
 )

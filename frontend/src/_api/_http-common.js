@@ -1,5 +1,9 @@
-function getAuthToken () {
+function getAuthToken() {
   return `Bearer ${localStorage.getItem('token')}`;
 }
 
-export { getAuthToken };
+function tokan() {
+  return null;
+}
+
+export { getAuthToken, tokan };

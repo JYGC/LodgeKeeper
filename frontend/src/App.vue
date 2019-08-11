@@ -7,14 +7,14 @@
 </template>
 
 <script>
-const default_layout = "default";
+const defaultLayout = 'default';
 
 export default {
   computed: {
     // If layout not specified in router, assume defualt layout
     layout() {
-      return (this.$layout.meta.layout || default_layout) + '-layout';
-    }
-  }
-}
+      return `${this.$route.meta.layout || defaultLayout}-layout`;
+    },
+  },
+};
 </script>

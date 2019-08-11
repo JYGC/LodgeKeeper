@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getAuthToken } from './_http-common';
 import config from './config.json';
 
-function apiCheckAuthentication(callback) {
+function apiCheckAuthentication(successCallback, failCallback) {
   axios.get(`${config.apiURL}/user/auth`, {
     headers: {
       Authorization: getAuthToken(),
@@ -11,10 +11,11 @@ function apiCheckAuthentication(callback) {
   })
     .then((response) => {
       console.log(response);
-      callback(response.data.status === 'success');
+      successCallback();
     })
     .catch((error) => {
       console.log(error);
+      failCallback();
     });
 }
 
@@ -29,16 +30,28 @@ function apiLogin(_email, _password, successCallback, failCallback) {
   })
     .then((response) => {
       console.log(response);
-      if (typeof response.data.auth_token === 'string' && response.status === 201) {
-        localStorage.setItem('token', response.auth_token);
-        successCallback(response);
-      } else {
-        failCallback(response);
-      }
+      localStorage.setItem('token', response.data.auth_token);
+      successCallback(response);
     })
     .catch((error) => {
-      console.log(error);
+      failCallback(error);
     });
 }
 
-export { apiCheckAuthentication, apiLogin };
+function apiLogout(successCallback, failCallback) {
+  axios.get(`${config.apiURL}/user/logout`, {
+    headers: {
+      Authorization: getAuthToken(),
+    },
+  })
+    .then((response) => {
+      console.log(response);
+      localStorage.removeItem('token');
+      successCallback(response);
+    })
+    .catch((error) => {
+      failCallback(error);
+    });
+}
+
+export { apiCheckAuthentication, apiLogin, apiLogout };
