@@ -151,12 +151,12 @@ auth_blueprint.add_url_rule(
     methods=['POST']
 )
 auth_blueprint.add_url_rule(
-    '/auth/login',
+    '/user/login',
     view_func=login_view,
     methods=['POST']
 )
 auth_blueprint.add_url_rule(
-    '/auth/status',
+    '/user/auth',
     view_func=user_view,
     methods=['GET']
 )

@@ -71,7 +71,7 @@ class TestAuthBlueprint(BaseTestCase):
                                           self.test_user_address,
                                           self.test_user_phone)
             response = self.client.get(
-                '/auth/status',
+                '/user/auth',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()
@@ -93,7 +93,7 @@ class TestAuthBlueprint(BaseTestCase):
                                           self.test_user_address,
                                           self.test_user_phone)
             response = self.client.get(
-                '/auth/status',
+                '/user/auth',
                 headers=dict(
                     Authorization='Bearer' + json.loads(
                         resp_register.data.decode()
@@ -239,7 +239,7 @@ class TestAuthBlueprint(BaseTestCase):
             db.session.add(blacklist_token)
             db.session.commit()
             response = self.client.get(
-                '/auth/status',
+                '/user/auth',
                 headers=dict(
                     Authorization='Bearer ' + json.loads(
                         resp_register.data.decode()

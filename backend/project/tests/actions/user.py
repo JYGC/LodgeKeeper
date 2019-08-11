@@ -72,7 +72,7 @@ class LoginUser(IAction, IApiCheckAction, IDbCheckAction):
     def api_request(self, test_values: UserValues):
         ''' login user via api '''
         return self.test_cls.client.post(
-            '/auth/login',
+            '/user/login',
             data=json.dumps(dict(email=test_values.email,
                                  password=test_values.password)),
             content_type='application/json',

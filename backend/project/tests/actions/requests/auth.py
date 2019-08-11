@@ -16,7 +16,7 @@ def register_user(self, email, password, address, phone):
 def login_user(self, email, password):
     ''' login user via api '''
     return self.client.post(
-        '/auth/login',
+        '/user/login',
         data=json.dumps(dict(email=email, password=password)),
         content_type='application/json',
     )

@@ -17,7 +17,7 @@ class BaseConfig:
     AUTH_DURATION = 24 * 60 * 60
     EXCLUDE_FROM_AUTHENTICATION = [
         '/auth/register',
-        '/auth/login'
+        '/user/login'
     ]
     DATE_FMT = '%Y-%m-%d'
     LETTER_DATE_FMT = '%d %b %Y'
