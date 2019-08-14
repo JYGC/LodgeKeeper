@@ -25,10 +25,7 @@ class ITenancyValues():
                          nullable=False)
     rent_cost = db.Column(db.Numeric(16, 2), nullable=False)
     rent_cost_per_week = db.Column(db.Numeric(16, 2), nullable=False)
-    @declared_attr
-    def payment_method_id(self):
-        return db.Column(db.Integer, db.ForeignKey('payment_method.id'),
-                         nullable=False)
+    payment_description = db.Column(db.Text)
     notes = db.Column(db.Text)
     is_deleted = db.Column(db.Boolean, nullable=False)
     @declared_attr
@@ -81,7 +78,8 @@ class TenancyHistory(db.Model, ITenancyValues):
             self.payment_terms_id = updated_tenancy.payment_terms_id
             self.rent_cost = updated_tenancy.rent_cost
             self.rent_cost_per_week = updated_tenancy.rent_cost_per_week
-            self.payment_method_id = updated_tenancy.payment_method_id
+            # self.payment_method_id = updated_tenancy.payment_method_id
+            self.payment_description = updated_tenancy.payment_description
             self.notes = updated_tenancy.notes
             self.is_deleted = updated_tenancy.is_deleted
             self.account_id = updated_tenancy.account_id

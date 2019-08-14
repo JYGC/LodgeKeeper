@@ -49,8 +49,7 @@ class AddNewTenancyAPI(MethodView):
             foreign_ids_set = db.session.query(
                 User.account_id,
                 RentType.id,
-                PaymentTerms.id,
-                PaymentMethod.id
+                PaymentTerms.id
             ).filter(
                 User.id == int(session.pop('user_id', None))
             ).filter(
@@ -58,10 +57,6 @@ class AddNewTenancyAPI(MethodView):
             ).filter(
                 PaymentTerms.value == self.request_json['tenancy'][
                     'payment_terms'
-                ]
-            ).filter(
-                PaymentMethod.value == self.request_json['payment_details'][
-                    'payment_method'
                 ]
             ).first()
             if foreign_ids_set == None or None in foreign_ids_set:
@@ -72,8 +67,7 @@ class AddNewTenancyAPI(MethodView):
             self.foriegn_ids = {
                 'user_account_id': foreign_ids_set[0],
                 'rent_type_id': foreign_ids_set[1],
-                'payment_terms_id': foreign_ids_set[2],
-                'payment_method_id': foreign_ids_set[3]
+                'payment_terms_id': foreign_ids_set[2]
             }
             # Add Tenancy and TenancyHistory to database
             new_tenancy = Tenancy()
@@ -92,8 +86,8 @@ class AddNewTenancyAPI(MethodView):
                 round(float(self.request_json['tenancy']['rent_cost']), 2),
                 self.foriegn_ids['payment_terms_id']
             )
-            new_tenancy.payment_method_id = self.foriegn_ids[
-                'payment_method_id'
+            new_tenancy.payment_description = self.request_json['tenancy'][
+                'payment_description'
             ]
             new_tenancy.notes = self.request_json['tenancy']['notes']
             new_tenancy.account_id = self.foriegn_ids['user_account_id']
@@ -106,17 +100,6 @@ class AddNewTenancyAPI(MethodView):
                 tenant_name,
                 new_tenancy.id
             ) for tenant_name in self.request_json['tenants']])
-            # Update or create account payment details
-            pd_updater = PaymentDetailsUpdater(
-                db.session,
-                self.request_json['payment_details']['payment_method'],
-                self.foriegn_ids['user_account_id']
-            )
-            payment_details = pd_updater.dict_to_payment_details(
-                self.request_json['payment_details']
-            )
-            if pd_updater.payment_detail_is_new:
-                db.session.add(payment_details)
 
             # Add notifictions
             db.session.bulk_save_objects([Notification(
@@ -138,7 +121,6 @@ class AddNewTenancyAPI(MethodView):
                 'data': { 'tenancy': [{ 'id': new_tenancy.id }] }
             }), 201
         except Exception as ex:
-            print(traceback.format_exc())
             self.response = jsonify({'status': 'fail'}), 400
             db.session.rollback()
         finally:

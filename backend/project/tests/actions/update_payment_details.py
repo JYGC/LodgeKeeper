@@ -30,7 +30,8 @@ class ChkPaymentDetailsAction():
                               db_payment_details)
     
     @staticmethod
-    def _test_assertions(test_cls, account_id, test_payment_details, db_payment_details):
+    def _test_assertions(test_cls, account_id, test_payment_details,
+                         db_payment_details):
         pass
 
 

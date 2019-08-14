@@ -119,6 +119,17 @@ class PaymentDetailsUpdater(IPaymentDetailsClasses):
         return self.payment_details
 
 
+# Update or create account payment details
+# pd_updater = PaymentDetailsUpdater(
+#     db.session,
+#     self.request_json['payment_details']['payment_method'],
+#     self.foriegn_ids['user_account_id']
+# )
+# payment_details = pd_updater.dict_to_payment_details(
+#     self.request_json['payment_details']
+# )
+# if pd_updater.payment_detail_is_new:
+#     db.session.add(payment_details)
 class PaymentDetailsFetcher(IPaymentDetailsClasses):
     def __init__(self, db_session, account_id):
         self.account_payment_details: Dict[str, IPaymentDetails] = {}
