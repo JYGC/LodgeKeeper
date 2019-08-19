@@ -1,8 +1,8 @@
 <template>
   <div>
     <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
+        <router-link to="/">List All Tenancies</router-link> |
+        <router-link to="/tenancy-add">Add New Tenancy</router-link> |
         <div class="btn" v-on:click="logout()">Logout</div>
     </div>
     <slot />
@@ -10,18 +10,18 @@
 </template>
 
 <script>
-import { apiLogout } from '../_api/user';
+import userAPI from '../_api/user';
 
 export default {
   methods: {
     logout() {
       const vm = this;
-      apiLogout(() => {
+      userAPI.logoutAPI(() => {
         vm.$router.push('/login');
       }, () => {
         console.log('Logout failure');
       });
     },
   },
-}
+};
 </script>

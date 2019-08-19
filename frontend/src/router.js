@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import { apiCheckAuthentication } from './_api/user';
+import userAPI from './_api/user';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
@@ -43,14 +43,14 @@ const router = new Router({
     {
       path: '*',
       redirect: '/',
-    }
+    },
   ],
 });
 
 router.beforeEach((to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/login', '/register'];
-  apiCheckAuthentication(() => {
+  userAPI.checkAuthenticationAPI(() => {
     if (publicPages.includes(to.path)) {
       next('/');
     } else {

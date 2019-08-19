@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { apiLogin } from '../_api/user';
+import userAPI from '../_api/user';
 
 export default {
   name: 'login',
@@ -24,7 +24,7 @@ export default {
     login() {
       const vm = this;
       if (vm.input.email !== '' && vm.input.password !== '') {
-        apiLogin(vm.input.email, vm.input.password, () => {
+        userAPI.loginAPI(vm.input.email, vm.input.password, () => {
           vm.$router.push('/home');
         }, () => {
           console.log('A email or password is wrong');

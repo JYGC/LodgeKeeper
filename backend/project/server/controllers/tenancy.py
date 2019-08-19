@@ -80,8 +80,11 @@ class AddNewTenancyAPI(MethodView):
                 app.config['DATE_FMT']
             )
             new_tenancy.address = self.request_json['tenancy']['address']
-            new_tenancy.room_name = self.request_json['tenancy']['room_name']
             new_tenancy.rent_type_id = self.foriegn_ids['rent_type_id']
+            if self.request_json['tenancy']['rent_type'] == 'Private Rooms':
+                new_tenancy.room_name = self.request_json['tenancy'][
+                    'room_name'
+                ]
             new_tenancy.set_rent_cost(
                 round(float(self.request_json['tenancy']['rent_cost']), 2),
                 self.foriegn_ids['payment_terms_id']
@@ -89,7 +92,6 @@ class AddNewTenancyAPI(MethodView):
             new_tenancy.payment_description = self.request_json['tenancy'][
                 'payment_description'
             ]
-            new_tenancy.notes = self.request_json['tenancy']['notes']
             new_tenancy.account_id = self.foriegn_ids['user_account_id']
             db.session.add(new_tenancy)
             db.session.flush()
@@ -121,6 +123,7 @@ class AddNewTenancyAPI(MethodView):
                 'data': { 'tenancy': [{ 'id': new_tenancy.id }] }
             }), 201
         except Exception as ex:
+            print(traceback.format_exc())
             self.response = jsonify({'status': 'fail'}), 400
             db.session.rollback()
         finally:

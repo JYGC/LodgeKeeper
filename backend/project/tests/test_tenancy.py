@@ -27,19 +27,35 @@ def register_user_get_auth_token(test_cls):
 class TestAddTenancyAPI(BaseTestCase):
     ''' Test views in Property Blueprint '''
     
-    def test_add_tenancy(self):
-        ''' Tets adding a new tenancy '''
+    def test_add_private_room_tenancy(self):
+        ''' Tets adding a new private room tenancy '''
         with self.client:
             auth_token = register_user_get_auth_token(self)
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['all_details'],
+                values.tenancy_values.test_new_tenancy_values['private_room'],
                 auth_token
             )
             ChkAddTenancyResponseAction.run(self, resp_addtenancy)
             ChkAddTenancyDbStateAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['all_details'],
+                values.tenancy_values.test_new_tenancy_values['private_room'],
+                resp_addtenancy
+            )
+    
+    def test_add_whole_property_tenancy(self):
+        ''' Tets adding a new whole property tenancy '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                values.tenancy_values.test_new_tenancy_values['whole_property'],
+                auth_token
+            )
+            ChkAddTenancyResponseAction.run(self, resp_addtenancy)
+            ChkAddTenancyDbStateAction.run(
+                self,
+                values.tenancy_values.test_new_tenancy_values['whole_property'],
                 resp_addtenancy
             )
     
@@ -49,7 +65,7 @@ class TestAddTenancyAPI(BaseTestCase):
             register_user_get_auth_token(self)
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['all_details'],
+                values.tenancy_values.test_new_tenancy_values['private_room'],
                 '000000000000000000000000'
             )
             ChkAddTenancyResponseActionInvaildToken.run(self, resp_addtenancy)

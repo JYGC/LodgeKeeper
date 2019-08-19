@@ -1,9 +1,5 @@
-function getAuthToken() {
-  return `Bearer ${localStorage.getItem('token')}`;
-}
+const httpCommon = {};
 
-function tokan() {
-  return null;
-}
+httpCommon.getAuthToken = () => `Bearer ${localStorage.getItem('token')}`;
 
-export { getAuthToken, tokan };
+export default httpCommon;

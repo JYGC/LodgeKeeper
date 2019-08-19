@@ -57,8 +57,8 @@
     </div>
     <div>
       $ <input type="number" v-model="rentPayment.rentCost">&nbsp;
-      <label v-if="rentPayment.selectedRentPayment != '0'">
-        {{ rentPayment.selectedRentPayment }}
+      <label v-if="rentPayment.selectedPaymentTerms != '0'">
+        {{ rentPayment.selectedPaymentTerms }}
       </label>
     </div>
     <div>
@@ -89,11 +89,13 @@
         </option>
       </select>
     </div>
-    <div>
-      <label>Room Name:</label>
-    </div>
-    <div>
-      <input type="text" v-model="propertyDetails.roomName">
+    <div v-if="propertyDetails.selectedRentType == 'Private Rooms'">
+      <div>
+        <label>Room Name:</label>
+      </div>
+      <div>
+        <input type="text" v-model="propertyDetails.roomName">
+      </div>
     </div>
   </div>
   <div class="notification-scheduling">
@@ -110,18 +112,22 @@
           </th>
         </thead>
         <tbody>
-          <tr v-for="notification in notifications.notificationFields"
-          v-bind:key="notification.name">
+          <tr v-for="notificationField in notifications.notificationFields"
+          v-bind:key="notificationField.name">
             <td>
-              Notification {{ notification.name }}
+              Notification {{ notificationField.name }}
             </td>
             <td>
-              <select v-on:change="notificationChange($event, notification.name)"
-              v-bind:value="notification.value">
+              <select v-on:change="notificationChange($event, notificationField.name)"
+              v-bind:value="notificationField.value">
                 <option v-for="day in notifications.days" v-bind:key="day">{{ day }}</option>
               </select>
             </td>
-            <td></td>
+            <td>
+              <div class="btn btn-normal" v-on:click="deleteNotification(notificationField.name)">
+                Delete
+              </div>
+            </td>
           </tr>
         </tbody>
         <tfoot>
@@ -130,10 +136,15 @@
       </table>
     </div>
   </div>
+  <div class="submit-buttons">
+    <div class="btn" v-on:click="submitNewTenancy()">Submit</div>
+  </div>
 </div>
 </template>
 
 <script>
+import tenancyAPI from '../_api/tenancy';
+
 export default {
   name: 'tenancy-new',
   data() {
@@ -152,15 +163,16 @@ export default {
           { name: 'Per fortnight', value: 'Per fortnight' },
           { name: 'Per month', value: 'Per month' },
         ],
-        selectedRentPayment: '0',
+        selectedPaymentTerms: '0',
         paymentDescription: '',
       },
       propertyDetails: {
         propertyAddress: '',
         rentTypeList: [
           { name: 'Whole Property', value: 'Whole Property' },
-          { name: 'Private Room', value: 'Private Room' },
+          { name: 'Private Rooms', value: 'Private Rooms' },
         ],
+        selectedRentType: '0',
         roomName: '',
       },
       notifications: {
@@ -171,6 +183,33 @@ export default {
     };
   },
   methods: {
+    submitNewTenancy() {
+      const vm = this;
+      tenancyAPI.addNewTenancy({
+        tenants: this.tenantNames.tenantFields.map(
+          tenantField => tenantField.value,
+        ),
+        tenancy: {
+          start_date: this.dateRange.startDate,
+          end_date: this.dateRange.endDate,
+          address: this.propertyDetails.propertyAddress,
+          rent_type: this.propertyDetails.selectedRentType,
+          room_name: (
+            this.propertyDetails.selectedRentType === 'Private Rooms'
+          ) ? this.propertyDetails.roomName : null,
+          payment_terms: this.rentPayment.selectedPaymentTerms,
+          rent_cost: this.rentPayment.rentCost,
+          payment_description: this.rentPayment.paymentDescription,
+        },
+        notifications: this.notifications.notificationFields.map(
+          notificationField => notificationField.value,
+        ),
+      }, () => {
+        vm.$router.push('/');
+      }, (error) => {
+        console.log(['failure:', error].join(' '));
+      });
+    },
     addTenant() {
       this.tenantNames.tenantFields.push({
         name: this.tenantNames.tenantFieldIndex,
@@ -184,10 +223,13 @@ export default {
       );
     },
     paymentTermsChange(event) {
-      this.rentPayment.selectedRentPayment = event.target.value;
+      this.rentPayment.selectedPaymentTerms = event.target.value;
     },
     paymentMethodChange(event) {
       this.rentPayment.selectedPaymentMethod = event.target.value;
+    },
+    rentTypeChange(event) {
+      this.propertyDetails.selectedRentType = event.target.value;
     },
     addNotification() {
       this.notifications.notificationFields.push({
@@ -199,7 +241,12 @@ export default {
     notificationChange(event, notificationFieldName) {
       this.notifications.notificationFields.find(
         notification => notification.name === notificationFieldName,
-      ).value = parseInt(event.target.value);
+      ).value = parseInt(event.target.value, 10);
+    },
+    deleteNotification(name) {
+      this.notifications.notificationFields = this.notifications.notificationFields.filter(
+        notificationField => notificationField.name !== name,
+      );
     },
   },
 };

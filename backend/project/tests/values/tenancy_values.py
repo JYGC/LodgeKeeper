@@ -31,7 +31,7 @@ class NewTenancyValues():
 import datetime
 
 test_new_tenancy_values = {
-    'all_details': NewTenancyValues(
+    'private_room': NewTenancyValues(
         TenancyValues(
             start_date=(
                 datetime.datetime.now() + datetime.timedelta(days=34)
@@ -42,6 +42,24 @@ test_new_tenancy_values = {
             address='123 Goldstern Drive, Tyron, QLD 5666',
             rent_type='Private Rooms',
             room_name='Room 4',
+            payment_terms='Per month',
+            rent_cost=865.99,
+            payment_description='Pay this is Account A'
+        ),
+        ['James Balls', 'Helena Colts'],
+        [3, 4]
+    ),
+    'whole_property': NewTenancyValues(
+        TenancyValues(
+            start_date=(
+                datetime.datetime.now() + datetime.timedelta(days=34)
+            ).strftime("%Y-%m-%d"),
+            end_date=(
+                datetime.datetime.now() + datetime.timedelta(days=254)
+            ).strftime("%Y-%m-%d"),
+            address='123 Goldstern Drive, Tyron, QLD 5666',
+            rent_type='Whole Property',
+            room_name=None,
             payment_terms='Per month',
             rent_cost=865.99,
             payment_description='Pay this is Account A'
