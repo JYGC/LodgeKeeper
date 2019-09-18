@@ -33,7 +33,7 @@ class ITenantBillValues():
     def tenant_bill_status_id(self):
         return db.Column(db.Integer, db.ForeignKey('tenant_bill_status.id'),
                          nullable=False)
-    is_deleted = db.Column(db.Boolean, nullable=False)
+    is_deleted = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class ITenantBillId():
@@ -44,11 +44,7 @@ class ITenantBillId():
 class TenantBill(db.Model, ITenantBillId, ITenantBillValues):
     ''' Model to manage Tenant data '''
     __tablename__ = 'tenant_bill'
-    date_created = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self):
-        self.date_created = datetime.now()
-        self.is_deleted = False
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
 
 class TenantBillHistory(db.Model, ITenantBillValues):
@@ -57,7 +53,7 @@ class TenantBillHistory(db.Model, ITenantBillValues):
     id = db.Column(db.Integer, primary_key=True)
     tenant_bill_id = db.Column(db.Integer, db.ForeignKey('tenant_bill.id'),
                                nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def __init__(self, updated_bill: (ITenantBillId, ITenantBillValues)=None):
         if updated_bill != None:
@@ -72,10 +68,9 @@ class TenantBillHistory(db.Model, ITenantBillValues):
             self.tenant_bill_status_id = updated_bill.tenant_bill_status_id
             self.is_deleted = updated_bill.is_deleted
 
-        self.date_created = datetime.now()
-
 
 class IRentScheduler():
+    ''' Abstraction for rent scheduler classes '''
     def __init__(self, tenancy: (ITenancyId, ITenancyValues)):
         self.tenant_bills = []
         self.next_due_date = None
@@ -98,7 +93,12 @@ class IRentScheduler():
     def _compute_next_rent(self):
         return round((self.tenancy.rent_cost_per_week * (
             self.next_due_date - self.cur_due_date
-        ).days / 7 if (self._is_last_period) else self.tenancy.rent_cost), 2)
+        ).days / 7 if self._next_rent_final_condition() else (
+            self.tenancy.rent_cost
+        )), 2)
+    
+    def _next_rent_final_condition(self):
+        return self._is_last_period
     
     def _create_tenant_bill(self):
         tenant_bill = TenantBill()
@@ -133,6 +133,10 @@ class IRentScheduler():
 
 
 class IDayBasedScheduler(IRentScheduler):
+    '''
+    Abstraction for schedulers that need to count exact number of days between
+    rent due dates
+    '''
     days_in_period = None
 
     def _set_next_due_date(self):
@@ -142,33 +146,49 @@ class IDayBasedScheduler(IRentScheduler):
 
 
 class MonthlyScheduler(IRentScheduler):
+    ''' Scheduler for monthly payments '''
     def __init__(self, tenancy: (ITenancyId, ITenancyValues)):
         self.due_date_day = tenancy.start_date.day
+        self.max_cur_mth_max_days = None
         super().__init__(tenancy)
 
     def _set_next_due_date(self):
-        next_due_yr_mth = datetime(self.cur_due_date.year, self.cur_due_date.month,
-                              1) + relativedelta(months=1)
-        max_cur_mth_max_days = calendar.monthrange(next_due_yr_mth.year,
+        next_due_yr_mth = datetime(self.cur_due_date.year,
+                                   self.cur_due_date.month,
+                                   1) + relativedelta(months=1)
+        self.max_cur_mth_max_days = calendar.monthrange(next_due_yr_mth.year,
                                                    next_due_yr_mth.month)[1]
         self.next_due_date = datetime(
             next_due_yr_mth.year,
             next_due_yr_mth.month,
-            max_cur_mth_max_days if (
-                self.due_date_day > max_cur_mth_max_days
-            ) else self.due_date_day
+            self.due_date_day if (
+                self.due_date_day < self.max_cur_mth_max_days
+            ) else self.max_cur_mth_max_days
+        )
+
+    def _next_rent_final_condition(self):
+        return self._is_last_period and (
+            self.next_due_date.day < self.cur_due_date.day and (
+                self.next_due_date.day < self.max_cur_mth_max_days # NEEDS WORK AND UNDERSTANDING
+            )
         )
 
 
 class FortnightlyScheduler(IDayBasedScheduler):
+    ''' Scheduler for fortnightly payments '''
     days_in_period = 14
 
 
 class WeeklyScheduler(IDayBasedScheduler):
+    ''' Scheduler for weekly payments '''
     days_in_period = 7
 
 
 class RentSchedulerSelector():
+    '''
+    Helper class to select correct RentSelector based on tenancy
+    payment terms
+    '''
     def __init__(self, tenancy: (ITenancyId, ITenancyValues)):
         if PaymentTerms.type_values[
             tenancy.payment_terms_id

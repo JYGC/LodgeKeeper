@@ -31,6 +31,98 @@ class NewTenancyValues():
 import datetime
 
 test_new_tenancy_values = {
+    'tenancy_list': [
+        NewTenancyValues(
+            TenancyValues(
+                start_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=34)
+                ).strftime("%Y-%m-%d"),
+                end_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=254)
+                ).strftime("%Y-%m-%d"),
+                address='123 Goldstern Drive, Tyron, QLD 5666',
+                rent_type='Private Rooms',
+                room_name='Room 4',
+                payment_terms='Per month',
+                rent_cost=865.99,
+                payment_description='Pay this is Account A'
+            ),
+            ['James Balls', 'Helena Coltis'],
+            [7, 14]
+        ),
+        NewTenancyValues(
+            TenancyValues(
+                start_date=(
+                    datetime.datetime.now() - datetime.timedelta(days=1000)
+                ).strftime("%Y-%m-%d"),
+                end_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=2994)
+                ).strftime("%Y-%m-%d"),
+                address='123 Goldstern Drive, Tyron, QLD 5666',
+                rent_type='Whole Property',
+                room_name=None,
+                payment_terms='Per week',
+                rent_cost=400.77,
+                payment_description='Pay this is Account A'
+            ),
+            ['Xue Yang', 'Gladis Vue'],
+            [2, 5, 10, 14]
+        ),
+        NewTenancyValues(
+            TenancyValues(
+                start_date=(
+                    datetime.datetime.now() - datetime.timedelta(days=3000)
+                ).strftime("%Y-%m-%d"),
+                end_date=(
+                    datetime.datetime.now() - datetime.timedelta(days=2000)
+                ).strftime("%Y-%m-%d"),
+                address='123 Goldstern Drive, Tyron, QLD 5666',
+                rent_type='Private Rooms',
+                room_name='Room 4',
+                payment_terms='Per month',
+                rent_cost=865.99,
+                payment_description='Pay this is Account A'
+            ),
+            ['Sally Vegus'],
+            [16]
+        ),
+        NewTenancyValues(
+            TenancyValues(
+                start_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=0)
+                ).strftime("%Y-%m-%d"),
+                end_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=1254)
+                ).strftime("%Y-%m-%d"),
+                address='123 Ternstein Drive, Tyron, QLD 5666',
+                rent_type='Private Rooms',
+                room_name='Room 2',
+                payment_terms='Per fortnight',
+                rent_cost=706.99,
+                payment_description='Pay this is Account A TEST TEST'
+            ),
+            ['Larry Kettelmann', 'Lousie Kettelmann', 'Jim Kettlemann'],
+            [3, 4]
+        ),
+        NewTenancyValues(
+            TenancyValues(
+                start_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=0)
+                ).strftime("%Y-%m-%d"),
+                end_date=(
+                    datetime.datetime.now() + datetime.timedelta(days=9254)
+                ).strftime("%Y-%m-%d"),
+                address='123 Ternstein Drive, Tyron, QLD 5666',
+                rent_type='Whole Property',
+                room_name=None,
+                payment_terms='Per fortnight',
+                rent_cost=706.99,
+                payment_description='Pay this is Account A TEST TEST'
+            ),
+            ['Peson KettA', 'Peson KettB', 'Peson KettC', 'Peson KettD', 'Peson KettF'],
+            [1, 2, 4, 3]
+        )
+    ],
     'private_room': NewTenancyValues(
         TenancyValues(
             start_date=(
@@ -138,5 +230,59 @@ test_new_tenancy_values = {
         ),
         ['James Balls', 'Helena Colts'],
         [3, 4]
+    ),
+    'no_tenants': NewTenancyValues(
+        TenancyValues(
+            start_date=(
+                datetime.datetime.now() + datetime.timedelta(days=34)
+            ).strftime("%Y-%m-%d"),
+            end_date=(
+                datetime.datetime.now() + datetime.timedelta(days=254)
+            ).strftime("%Y-%m-%d"),
+            address='123 Goldstern Drive, Tyron, QLD 5666',
+            rent_type='Private Rooms',
+            room_name='Room 4',
+            payment_terms='Per month',
+            rent_cost=865.99,
+            payment_description='Pay this is Account A'
+        ),
+        [],
+        [3, 4]
+    ),
+    'no_notifications': NewTenancyValues(
+        TenancyValues(
+            start_date=(
+                datetime.datetime.now() + datetime.timedelta(days=34)
+            ).strftime("%Y-%m-%d"),
+            end_date=(
+                datetime.datetime.now() + datetime.timedelta(days=254)
+            ).strftime("%Y-%m-%d"),
+            address='123 Goldstern Drive, Tyron, QLD 5666',
+            rent_type='Private Rooms',
+            room_name='Room 4',
+            payment_terms='Per month',
+            rent_cost=865.99,
+            payment_description='Pay this is Account A'
+        ),
+        ['Rachel Sackler'],
+        []
+    ),
+    'no_tenants_and_notifications': NewTenancyValues(
+        TenancyValues(
+            start_date=(
+                datetime.datetime.now() + datetime.timedelta(days=34)
+            ).strftime("%Y-%m-%d"),
+            end_date=(
+                datetime.datetime.now() + datetime.timedelta(days=254)
+            ).strftime("%Y-%m-%d"),
+            address='123 Goldstern Drive, Tyron, QLD 5666',
+            rent_type='Private Rooms',
+            room_name='Room 4',
+            payment_terms='Per month',
+            rent_cost=865.99,
+            payment_description='Pay this is Account A'
+        ),
+        [],
+        []
     )
 }

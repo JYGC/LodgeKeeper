@@ -1,4 +1,6 @@
-# project/server/auth/views.py
+'''
+Blueprint for all controllers facilitating user account related functionality
+'''
 
 
 from flask import Blueprint, request, make_response, jsonify, session
@@ -7,13 +9,11 @@ from flask.views import MethodView
 from project.server import bcrypt, db
 from project.server.models.auth import Account, User, BlacklistToken
 
-auth_blueprint = Blueprint('auth', __name__)
+user_blueprint = Blueprint('user', __name__)
 
 
 class RegisterAPI(MethodView):
-    """
-    User Registration Resource
-    """
+    ''' User Registration Resource '''
 
     def post(self):
         # get the post data
@@ -61,9 +61,7 @@ class RegisterAPI(MethodView):
 
 
 class LoginAPI(MethodView):
-    """
-    User Login Resource
-    """
+    ''' User Login Resource '''
     def post(self):
         # get the post data
         post_data = request.get_json()
@@ -96,16 +94,14 @@ class LoginAPI(MethodView):
 
 
 class UserAPI(MethodView):
-    """
-    User Resource
-    """
+    ''' User Resource '''
     def get(self):
         # Auth user
         user_id = session.pop('user_id', None)
         user = User.query.filter_by(id=int(user_id)).first()
         return make_response(jsonify({
             'status': 'success',
-            'data': {
+            'd': {
                 'user_id': user.id,
                 'email': user.email,
                 'admin': user.admin,
@@ -115,9 +111,7 @@ class UserAPI(MethodView):
 
 
 class LogoutAPI(MethodView):
-    """
-    Logout Resource
-    """
+    ''' Logout Resource '''
     def get(self):
         response = None
         try:
@@ -145,22 +139,22 @@ user_view = UserAPI.as_view('user_api')
 logout_view = LogoutAPI.as_view('logout_api')
 
 # add Rules for API Endpoints
-auth_blueprint.add_url_rule(
+user_blueprint.add_url_rule(
     '/auth/register',
     view_func=registration_view,
     methods=['POST']
 )
-auth_blueprint.add_url_rule(
+user_blueprint.add_url_rule(
     '/user/login',
     view_func=login_view,
     methods=['POST']
 )
-auth_blueprint.add_url_rule(
+user_blueprint.add_url_rule(
     '/user/auth',
     view_func=user_view,
     methods=['GET']
 )
-auth_blueprint.add_url_rule(
+user_blueprint.add_url_rule(
     '/user/logout',
     view_func=logout_view,
     methods=['GET']

@@ -36,34 +36,11 @@ class ChkAddTenancyResponseAction():
     def run(test_cls, response):
         data = json.loads(response.data.decode())
         test_cls.assertEqual(data['status'], 'success')
-        test_cls.assertIn('data', data)
-        test_cls.assertTrue(data['data']['tenancy'][0]['id'])
+        test_cls.assertIn('d', data)
+        test_cls.assertTrue(data['d']['tenancy_id'])
         test_cls.assertEqual(response.content_type,
                              'application/json')
         test_cls.assertEqual(response.status_code, 201)
-
-
-class ChkAddTenancyResponseActionBadRequest():
-    @staticmethod
-    def run(test_cls, response):
-        data = json.loads(response.data.decode())
-        test_cls.assertEqual(data['status'], 'fail')
-        test_cls.assertEqual(response.content_type,
-                                  'application/json')
-        test_cls.assertEqual(response.status_code, 400)
-
-
-class ChkAddTenancyResponseActionInvaildToken():
-    @staticmethod
-    def run(test_cls, response):
-        data = json.loads(response.data.decode())
-        test_cls.assertEqual(data['status'], 'fail')
-        test_cls.assertNotIn('data', data)
-        test_cls.assertEqual(data['message'],
-                             'Invalid token. Please log in again.')
-        test_cls.assertEqual(response.content_type,
-                             'application/json')
-        test_cls.assertEqual(response.status_code, 401)
 
 
 class ChkAddTenancyDbStateAction():
@@ -85,7 +62,7 @@ class ChkAddTenancyDbStateAction():
         ).outerjoin(
             PaymentTerms,
             Tenancy.payment_terms_id == PaymentTerms.id
-        ).filter(Tenancy.id == data['data']['tenancy'][0]['id']).all()
+        ).filter(Tenancy.id == data['d']['tenancy_id']).all()
         test_cls.assertEqual(len(tenancy_list), 1)
         test_cls.assertEqual(
             tenancy_list[0].Tenancy.start_date.strftime(app.config['DATE_FMT']),
@@ -132,8 +109,8 @@ class ChkAddTenancyDbStateAction():
 
         # Check tenant values in database
         tenant_list = db.session.query(Tenant).filter(
-            Tenant.tenancy_id == data['data']['tenancy'][0]['id']
+            Tenant.tenancy_id == data['d']['tenancy_id']
         ).all()
-        tenant_names = {tenant.name for tenant in tenant_list}
+        tenant_names = set(tenant.name for tenant in tenant_list)
         test_cls.assertEqual(set(test_values.tenants) ^ tenant_names,
                              set())

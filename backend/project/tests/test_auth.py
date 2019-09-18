@@ -80,9 +80,9 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['data'] is not None)
-            self.assertTrue(data['data']['email'] == self.test_user_email)
-            self.assertTrue(str(data['data']['admin']) == 'True' or 'False')
+            self.assertTrue(data['d'] is not None)
+            self.assertTrue(data['d']['email'] == self.test_user_email)
+            self.assertTrue(str(data['d']['admin']) == 'True' or 'False')
             self.assertEqual(response.status_code, 200)
 
     def test_user_status_malformed_bearer_token(self):

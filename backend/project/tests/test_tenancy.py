@@ -7,12 +7,18 @@ import unittest
 
 from project.tests.base import BaseTestCase
 from project.tests.actions.user import RegisterUser, RegisterUserApiAction
+from project.tests.actions.list_tenancy import (
+    ListTenancyApiAction,
+    ChkListTenancyResponseAction
+)
 from project.tests.actions.add_new_tenancy import (
     AddTenancyApiAction,
     ChkAddTenancyResponseAction,
-    ChkAddTenancyResponseActionInvaildToken,
-    ChkAddTenancyResponseActionBadRequest,
     ChkAddTenancyDbStateAction
+)
+from project.tests.actions.failed_response import (
+    ChkResponseActionBadRequest,
+    ChkResponseActionInvaildToken
 )
 from project.tests import values
 
@@ -24,11 +30,66 @@ def register_user_get_auth_token(test_cls):
     ).data.decode())['auth_token']
 
 
+class TestListTenancies(BaseTestCase):
+    ''' Test list Tenancy endpoint '''
+
+    def test_list_no_tenancies(self):
+        ''' Test listing tenancies with no tenancies '''
+        with self.client:
+            ChkListTenancyResponseAction.run(
+                self,
+                dict(),
+                ListTenancyApiAction.run(
+                    self,
+                    register_user_get_auth_token(self)
+                )
+            )
+
+    def test_list_one_tenancy(self):
+        ''' Test listing tenancies with one tenancy '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            tenancy_id = json.loads(AddTenancyApiAction.run(
+                self,
+                values.tenancy_values.test_new_tenancy_values['tenancy_list'][
+                    2
+                ],
+                auth_token
+            ).data.decode())['d']['tenancy_id']
+            ChkListTenancyResponseAction.run(self, {
+                tenancy_id: values.tenancy_values.test_new_tenancy_values[
+                    'tenancy_list'
+                ][2]
+            }, ListTenancyApiAction.run(self, auth_token))
+
+    def test_list_ten_tenancies(self):
+        ''' Test listing tenancies with ten tenancy '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            test_tenancy_list_dict = dict()
+            for test_tenancy in values.tenancy_values.test_new_tenancy_values[
+                'tenancy_list'
+            ]:
+                test_tenancy_list_dict[
+                    json.loads(AddTenancyApiAction.run(
+                        self,
+                        test_tenancy,
+                        auth_token
+                    ).data.decode())['d']['tenancy_id']
+                ] = test_tenancy
+
+            ChkListTenancyResponseAction.run(self, test_tenancy_list_dict,
+                                             ListTenancyApiAction.run(
+                                                 self,
+                                                 auth_token
+                                             ))
+
+
 class TestAddTenancyAPI(BaseTestCase):
-    ''' Test views in Property Blueprint '''
+    ''' Test add tenancy endpoint '''
     
     def test_add_private_room_tenancy(self):
-        ''' Tets adding a new private room tenancy '''
+        ''' Test adding a new private room tenancy '''
         with self.client:
             auth_token = register_user_get_auth_token(self)
             resp_addtenancy = AddTenancyApiAction.run(
@@ -68,7 +129,7 @@ class TestAddTenancyAPI(BaseTestCase):
                 values.tenancy_values.test_new_tenancy_values['private_room'],
                 '000000000000000000000000'
             )
-            ChkAddTenancyResponseActionInvaildToken.run(self, resp_addtenancy)
+            ChkResponseActionInvaildToken.run(self, resp_addtenancy)
     
     def test_add_tenancy_with_bad_foriegn_table_values(self):
         ''' Test adding new tenancy with bad foriegn table values '''
@@ -79,10 +140,44 @@ class TestAddTenancyAPI(BaseTestCase):
                 values.tenancy_values.test_new_tenancy_values['with_bad_types'],
                 auth_token
             )
-            ChkAddTenancyResponseActionBadRequest.run(
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+    
+    def test_add_tenancy_no_tenants(self):
+        ''' Test adding tenancy without tenants '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                resp_addtenancy
+                values.tenancy_values.test_new_tenancy_values['no_tenants'],
+                auth_token
             )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+
+    def test_add_tenancy_no_notifications(self):
+        ''' Test adding tenancy without notifications '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                values.tenancy_values.test_new_tenancy_values[
+                    'no_notifications'
+                ],
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+
+    def test_add_tenancy_no_tenants_and_notifications(self):
+        ''' Test adding tenancy without tenants and notifications '''
+        with self.client:
+            auth_token = register_user_get_auth_token(self)
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                values.tenancy_values.test_new_tenancy_values[
+                    'no_tenants_and_notifications'
+                ],
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
 
     # def test_add_tenancy_with_cash_details(self):
     #     ''' Test adding new tenancy with cash payment method '''

@@ -8,6 +8,7 @@ from project.server import db
 
 
 class IValueModel():
+    ''' Abstraction for models to manage type values '''
     type_values = {}
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +20,9 @@ class IValueModel():
 
 
 class IValueModelSelectableIds(IValueModel):
+    '''
+    Abstractions for type value models which allow ids to be selected by value
+    '''
     @classmethod
     def get_value_id(self, value):
         return dict(zip(self.type_values.values(), self.type_values.keys()))[
@@ -63,7 +67,7 @@ class PaymentMethod(db.Model, IValueModel):
 
 
 class TenantBillType(db.Model, IValueModelSelectableIds):
-    ''' Model to manage tenanc bill type '''
+    ''' Model to manage tenant bill type '''
     __tablename__ = 'tenant_bill_type'
     type_values = { 1: 'other', 2: 'rent' }
 
@@ -80,7 +84,20 @@ class TenantBillStatus(db.Model, IValueModelSelectableIds):
         super().__init__(id=id, value=value)
 
 
+class TenancyStatus(db.Model, IValueModelSelectableIds):
+    ''' Model to manage tanancy status '''
+    __tablename__ = 'tenancy_status'
+    type_values = { 1: 'Unstarted', 2: 'Active', 3: 'Ended', 4: 'Terminated',
+                    5: 'Deleted' }
+
+    def __init__(self, id, value):
+        super().__init__(id=id, value=value)
+
+
 class InitializeTypeValue():
+    '''
+    Helper class containing methods to initialize type values in the database
+    '''
     @staticmethod
     def update_default_data():
         value_model_list = [
@@ -89,7 +106,8 @@ class InitializeTypeValue():
             PropertyType,
             RentType,
             TenantBillStatus,
-            TenantBillType
+            TenantBillType,
+            TenancyStatus
         ]
         for value_model in value_model_list:
             # Create {id: value} dictionary to track changes in existing values

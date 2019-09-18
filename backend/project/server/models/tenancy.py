@@ -6,7 +6,7 @@ import datetime
 from sqlalchemy.ext.declarative import declared_attr
 
 from project.server import db
-from project.server.models.type_values import PaymentTerms
+from project.server.models.type_values import PaymentTerms, TenancyStatus
 
 
 class ITenancyValues():
@@ -27,10 +27,14 @@ class ITenancyValues():
     rent_cost_per_week = db.Column(db.Numeric(16, 2), nullable=False)
     payment_description = db.Column(db.Text)
     notes = db.Column(db.Text)
-    is_deleted = db.Column(db.Boolean, nullable=False)
+    is_deleted = db.Column(db.Boolean, nullable=False, default=False)
     @declared_attr
     def account_id(self):
         return db.Column(db.Integer, db.ForeignKey('account.id'),
+                         nullable=False)
+    @declared_attr
+    def tenancy_status_id(self):
+        return db.Column(db.Integer, db.ForeignKey('tenancy_status.id'),
                          nullable=False)
 
 
@@ -42,7 +46,8 @@ class ITenancyId():
 class Tenancy(db.Model, ITenancyId, ITenancyValues):
     ''' Model for managing Tenancy data '''
     __tablename__ = 'tenancy'
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False,
+                             default=datetime.datetime.now)
 
     def set_rent_cost(self, rent_cost, payment_terms_id):
         self.rent_cost = rent_cost
@@ -53,10 +58,22 @@ class Tenancy(db.Model, ITenancyId, ITenancyValues):
             self.rent_cost_per_week = round(rent_cost * 7 / 14, 2)
         elif PaymentTerms.type_values[payment_terms_id] == 'Per week':
             self.rent_cost_per_week = rent_cost
-
-    def __init__(self):
-        self.date_created = datetime.datetime.now()
-        self.is_deleted = False
+    
+    def set_tenancy_dates(self, start_date, end_date):
+        self.start_date = start_date
+        self.end_date = end_date
+        self.update_tenancy_status()
+    
+    def update_tenancy_status(self):
+        now = datetime.datetime.now()
+        if now < self.start_date:
+            self.tenancy_status_id = TenancyStatus.get_value_id('Unstarted')
+        elif now > self.start_date and now < self.end_date:
+            self.tenancy_status_id = TenancyStatus.get_value_id('Active')
+        elif now > self.end_date:
+            self.tenancy_status_id = TenancyStatus.get_value_id('Ended')
+        else:
+            raise Exception('Tenancy start and end dates are not valid')
 
 
 class TenancyHistory(db.Model, ITenancyValues):
@@ -65,7 +82,8 @@ class TenancyHistory(db.Model, ITenancyValues):
     id = db.Column(db.Integer, primary_key=True)
     tenancy_id = db.Column(db.Integer, db.ForeignKey('tenancy.id'),
                            nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False,
+                             default=datetime.datetime.now)
 
     def __init__(self, updated_tenancy: (ITenancyId, ITenancyValues)=None):
         if updated_tenancy != None:
@@ -83,5 +101,4 @@ class TenancyHistory(db.Model, ITenancyValues):
             self.notes = updated_tenancy.notes
             self.is_deleted = updated_tenancy.is_deleted
             self.account_id = updated_tenancy.account_id
-
-        self.date_created = datetime.datetime.now()
+            self.tenancy_status_id = updated_tenancy.tenancy_status_id

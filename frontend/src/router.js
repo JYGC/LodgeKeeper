@@ -1,12 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import userAPI from './_api/user';
-import Home from './views/Home.vue';
-import Login from './views/Login.vue';
-import Register from './views/Register.vue';
-import About from './views/About.vue';
-import TenancyAdd from './views/TenancyAdd.vue';
+import userAPI from '@/_api/user';
+import Login from '@/views/Login.vue';
+import Register from '@/views/Register.vue';
+import TenancyListAll from '@/views/TenancyListAll.vue';
+import TenancyAdd from '@/views/TenancyAdd.vue';
 
 Vue.use(Router);
 
@@ -14,14 +13,9 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/about',
-      name: 'about',
-      component: About,
-    },
-    {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'tenancy-list-all',
+      component: TenancyListAll,
     },
     {
       path: '/tenancy-add',

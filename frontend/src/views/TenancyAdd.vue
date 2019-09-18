@@ -1,5 +1,5 @@
 <template>
-<div id="tenancy-new">
+<div id="tenancy-add">
   <div class="tenant-names">
     <div class="table-container">
       <table class="table tenant-list">
@@ -143,10 +143,10 @@
 </template>
 
 <script>
-import tenancyAPI from '../_api/tenancy';
+import tenancyAPI from '@/_api/tenancy';
 
 export default {
-  name: 'tenancy-new',
+  name: 'tenancy-add',
   data() {
     return {
       tenantNames: {
