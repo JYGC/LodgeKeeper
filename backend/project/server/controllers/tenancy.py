@@ -193,6 +193,14 @@ class AddNewTenancyAPI(MethodView):
             return response
 
 
+class EditTenancyAPI(MethodView):
+    ''' Save Tenancy '''
+    def post(self):
+        ''' Process '''
+        return jsonify({'status': 'fail'}), 400
+
+
+# Must determine if we need this:
 class SaveTenancyNotesAPI(MethodView):
     ''' Save Tenancy Notes '''
     def post(self):
@@ -200,6 +208,7 @@ class SaveTenancyNotesAPI(MethodView):
         return jsonify({'status': 'fail'}), 400
 
 
+# Must determine if we need this:
 class SaveTenancyEndDateAPI(MethodView):
     ''' Save Tenancy End Date '''
     def post(self):

@@ -214,6 +214,197 @@ class TestAddTenancyAPI(BaseTestCase):
     #             ]
     #         )
 
+class TestEditTenancyAPI(BaseTestCase):
+    ''' Test Edit tenancy endpoint '''
+    def test_edit_unstarted_tenancy_changed_address(self):
+        ''' Test changing unstarted tenancy property address '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_no_address(self):
+        ''' Test removing unstarted tenancy property address '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_changed_rent_type_to_whole_property(self):
+        ''' Test changing unstarted tenancy rent type '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_changed_rent_type_to_private_room(self):
+        ''' Test changing unstarted tenancy rent type '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_no_rent_type(self):
+        ''' Test removing unstarted tenancy rent type '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_private_room_tenancy_change_room_name(self):
+        '''
+        Test changing room name of unstarted tenancy with rent type private room
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_private_room_tenancy_no_room_name(self):
+        '''
+        Test remove room name of unstarted tenancy with rent type private room
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_whole_property_tenancy_add_room_name(self):
+        '''
+        Test adding room name of unstarted tenancy with rent type whole property
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_change_start_date_to_lt_end_date(self):
+        '''
+        Test changing start date of unstarted tenancy to less than end date
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_change_start_date_to_gt_end_date(self):
+        '''
+        Test changing start date of unstarted tenancy to greater than end date
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_unstarted_tenancy_no_start_date(self):
+        ''' Test removing start date of unstarted tenancy '''
+        pass
+
+    def test_edit_unstarted_tenancy_change_end_date_to_gt_start_date(self):
+        '''
+        Test changing end date of unstarted tenancy to greater than start date
+        '''
+        pass
+
+    def test_edit_unstarted_tenancy_change_end_date_to_lt_start_date(self):
+        pass
+
+    def test_edit_unstarted_tenancy_no_end_date(self):
+        pass
+
+    def test_edit_unstarted_tenancy_change_tenancy_notes(self):
+        pass
+
+    def test_edit_unstarted_tenancy_no_tenancy_notes(self):
+        pass
+
+    def test_edit_unstarted_tenancy_terminate(self):
+        pass
+
+    def test_edit_unstarted_tenancy_delete(self):
+        pass
+
+    def test_edit_active_tenancy_changed_address(self):
+        pass
+
+    def test_edit_active_tenancy_no_address(self):
+        pass
+
+    def test_edit_active_tenancy_changed_rent_type_to_whole_property(self):
+        pass
+
+    def test_edit_active_tenancy_changed_rent_type_to_private_room(self):
+        pass
+
+    def test_edit_active_tenancy_no_rent_type(self):
+        pass
+
+    def test_edit_active_private_room_tenancy_change_room_name(self):
+        pass
+
+    def test_edit_active_private_room_tenancy_no_room_name(self):
+        pass
+
+    def test_edit_active_whole_property_tenancy_add_room_name(self):
+        '''
+        Test adding room name of active tenancy with rent type whole property
+        '''
+        with self.client:
+            self.assertTrue(False)
+
+    def test_edit_active_tenancy_change_start_date_to_lt_end_date(self):
+        pass
+
+    def test_edit_active_tenancy_change_start_date_to_gt_end_date(self):
+        pass
+
+    def test_edit_active_tenancy_no_start_date(self):
+        pass
+
+    def test_edit_active_tenancy_change_end_date_to_gt_start_date(self):
+        pass
+
+    def test_edit_active_tenancy_change_end_date_to_lt_start_date(self):
+        pass
+
+    def test_edit_active_tenancy_no_end_date(self):
+        pass
+
+    def test_edit_Active_tenancy_change_tenancy_notes(self):
+        pass
+
+    def test_edit_active_tenancy_no_tenncy_notes(self):
+        pass
+
+    def test_edit_active_terminate(self):
+        pass
+
+    def test_edit_active_delete(self):
+        pass
+
+    def test_edit_ended_tenancy_changed_address(self):
+        pass
+
+    def test_edit_ended_tenancy_no_address(self):
+        pass
+
+# These tests cases are controlled by one if statement so currently, we only
+# test for one field
+    # def test_edit_ended_tenancy_changed_rent_type_to_whole_property(self):
+    #     pass
+
+    # def test_edit_ended_tenancy_changed_rent_type_to_private_room(self):
+    #     pass
+
+    # def test_edit_ended_tenancy_no_rent_type(self):
+    #     pass
+
+    # def test_edit_ended_private_room_tenancy_change_room_name(self):
+    #     pass
+
+    # def test_edit_ended_private_room_tenancy_no_room_name(self):
+    #     pass
+
+    # def test_edit_ended_whole_property_tenancy_add_room_name(self):
+    #     '''
+    #     Test adding room name of ended tenancy with rent type whole property
+    #     '''
+    #     with self.client:
+    #         self.assertTrue(False)
+
+# Edit Ended Tenancy change start date
+# Edit Ended Tenancy change start date to greater than end date
+# Edit Ended Tenancy no start date
+# Edit Ended Tenancy change end date
+# Edit Ended Tenancy change end date to less than start date
+# Edit Ended Tenancy change end date to less than start date
+# Edit Ended Tenancy no end date
+    def test_edit_ended_tenancy_change_tenancy_notes(self):
+        pass
+
+    def test_edit_ended_tenancy_no_tenancy_notes(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
