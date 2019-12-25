@@ -4,9 +4,6 @@ from datetime import datetime
 from project.server import db
 from project.server import app
 from project.tests.base import BaseTestCase
-from project.tests.actions.abcs import (IAction, IApiCheckAction,
-                                        IDbCheckAction)
-from project.tests.values.tenancy_values import NewTenancyValues
 from project.server.models.type_values import (PaymentMethod, PaymentTerms,
                                                RentType)
 from project.server.models.tenancy import Tenancy, TenancyHistory
@@ -43,20 +40,20 @@ class ChkListTenancyResponseAction():
         ) ^ set(rid for rid in response_tenancy_dict), set())
         for _id in test_tenancy_list_dict:
             test_cls.assertIn(_id, response_tenancy_dict)
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.start_date,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['start_date'],
                                  response_tenancy_dict[_id]['Tenancy']['start_date'])
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.end_date,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['end_date'],
                                  response_tenancy_dict[_id]['Tenancy']['end_date'])
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.address,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['address'],
                                  response_tenancy_dict[_id]['Tenancy']['address'])
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.rent_type,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['rent_type'],
                                  response_tenancy_dict[_id]['RentType'])
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.room_name,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['room_name'],
                                  response_tenancy_dict[_id]['Tenancy']['room_name'])
             test_cls.assertEqual(
-                test_tenancy_list_dict[_id].tenancy.payment_terms,
+                test_tenancy_list_dict[_id]['payment_terms'],
                 response_tenancy_dict[_id]['PaymentTerms']
             )
-            test_cls.assertEqual(test_tenancy_list_dict[_id].tenancy.rent_cost,
+            test_cls.assertEqual(test_tenancy_list_dict[_id]['rent_cost'],
                                  response_tenancy_dict[_id]['Tenancy']['rent_cost'])
             test_cls.assertIsNone(response_tenancy_dict[_id]['Tenancy']['notes'])

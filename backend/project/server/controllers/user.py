@@ -140,7 +140,7 @@ logout_view = LogoutAPI.as_view('logout_api')
 
 # add Rules for API Endpoints
 user_blueprint.add_url_rule(
-    '/auth/register',
+    '/user/register',
     view_func=registration_view,
     methods=['POST']
 )

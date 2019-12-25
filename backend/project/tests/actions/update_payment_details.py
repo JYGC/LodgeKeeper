@@ -1,6 +1,4 @@
 from project.tests.base import BaseTestCase
-from project.tests.actions.abcs import (IAction, IApiCheckAction,
-                                        IDbCheckAction)
 from project.server import db
 from project.server.models.payment_details import (CashDetails, PaypalDetails,
                                                    BankDetails,

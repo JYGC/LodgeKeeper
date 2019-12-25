@@ -6,178 +6,186 @@ import json
 import unittest
 
 from project.tests.base import BaseTestCase
-from project.tests.actions.user import RegisterUser, RegisterUserApiAction
+from project.tests.actions.register_user import RegisterUserHelper
 from project.tests.actions.list_tenancy import (
     ListTenancyApiAction,
     ChkListTenancyResponseAction
 )
 from project.tests.actions.add_new_tenancy import (
     AddTenancyApiAction,
-    ChkAddTenancyResponseAction,
-    ChkAddTenancyDbStateAction
+    ChkAddTenancyResponseAction
 )
-from project.tests.actions.failed_response import (
+from project.tests.actions.tenancy_db_check import (
+    ChkNoTenancyInDb,
+    ChkTenancyDbStateById
+)
+from project.tests.actions.edit_tenancy import (
+    EditTenancyApi,
+    ChkEditTenancyResponse
+)
+from project.tests.actions.response_handling import (
     ChkResponseActionBadRequest,
-    ChkResponseActionInvaildToken
+    ChkResponseActionInvaildToken,
+    get_d_value
 )
-from project.tests import values
-
-
-def register_user_get_auth_token(test_cls):
-    return json.loads(RegisterUserApiAction.run(
-        test_cls,
-        values.auth_values.test_user_values['user_1']
-    ).data.decode())['auth_token']
-
-
-class TestListTenancies(BaseTestCase):
-    ''' Test list Tenancy endpoint '''
-
-    def test_list_no_tenancies(self):
-        ''' Test listing tenancies with no tenancies '''
-        with self.client:
-            ChkListTenancyResponseAction.run(
-                self,
-                dict(),
-                ListTenancyApiAction.run(
-                    self,
-                    register_user_get_auth_token(self)
-                )
-            )
-
-    def test_list_one_tenancy(self):
-        ''' Test listing tenancies with one tenancy '''
-        with self.client:
-            auth_token = register_user_get_auth_token(self)
-            tenancy_id = json.loads(AddTenancyApiAction.run(
-                self,
-                values.tenancy_values.test_new_tenancy_values['tenancy_list'][
-                    2
-                ],
-                auth_token
-            ).data.decode())['d']['tenancy_id']
-            ChkListTenancyResponseAction.run(self, {
-                tenancy_id: values.tenancy_values.test_new_tenancy_values[
-                    'tenancy_list'
-                ][2]
-            }, ListTenancyApiAction.run(self, auth_token))
-
-    def test_list_ten_tenancies(self):
-        ''' Test listing tenancies with ten tenancy '''
-        with self.client:
-            auth_token = register_user_get_auth_token(self)
-            test_tenancy_list_dict = dict()
-            for test_tenancy in values.tenancy_values.test_new_tenancy_values[
-                'tenancy_list'
-            ]:
-                test_tenancy_list_dict[
-                    json.loads(AddTenancyApiAction.run(
-                        self,
-                        test_tenancy,
-                        auth_token
-                    ).data.decode())['d']['tenancy_id']
-                ] = test_tenancy
-
-            ChkListTenancyResponseAction.run(self, test_tenancy_list_dict,
-                                             ListTenancyApiAction.run(
-                                                 self,
-                                                 auth_token
-                                             ))
+from project.tests.values import user_values
+from project.tests.values import tenancy_values
 
 
 class TestAddTenancyAPI(BaseTestCase):
     ''' Test add tenancy endpoint '''
     
-    def test_add_private_room_tenancy(self):
-        ''' Test adding a new private room tenancy '''
+    def test_add_tenancy(self):
+        '''
+        Test adding a new private room tenancy and a new whole property tenancy
+        '''
         with self.client:
-            auth_token = register_user_get_auth_token(self)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['private_room'],
+                tenancy_values.NEW_PRIVATE_ROOM,
                 auth_token
             )
             ChkAddTenancyResponseAction.run(self, resp_addtenancy)
-            ChkAddTenancyDbStateAction.run(
+            ChkTenancyDbStateById.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['private_room'],
-                resp_addtenancy
+                tenancy_values.NEW_PRIVATE_ROOM,
+                tenancy_id=get_d_value(resp_addtenancy, 'tenancy_id')
             )
-    
-    def test_add_whole_property_tenancy(self):
-        ''' Tets adding a new whole property tenancy '''
-        with self.client:
-            auth_token = register_user_get_auth_token(self)
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['whole_property'],
+                tenancy_values.NEW_WHOLE_PROPERTY,
                 auth_token
             )
             ChkAddTenancyResponseAction.run(self, resp_addtenancy)
-            ChkAddTenancyDbStateAction.run(
+            ChkTenancyDbStateById.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['whole_property'],
-                resp_addtenancy
+                tenancy_values.NEW_WHOLE_PROPERTY,
+                tenancy_id=get_d_value(resp_addtenancy, 'tenancy_id')
             )
     
     def test_add_tenancy_with_invalid_token(self):
         ''' Test adding new tenancy with invalid token '''
         with self.client:
-            register_user_get_auth_token(self)
+            RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['private_room'],
+                tenancy_values.NEW_PRIVATE_ROOM,
                 '000000000000000000000000'
             )
             ChkResponseActionInvaildToken.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.NEW_PRIVATE_ROOM
+            )
     
     def test_add_tenancy_with_bad_foriegn_table_values(self):
         ''' Test adding new tenancy with bad foriegn table values '''
         with self.client:
-            auth_token = register_user_get_auth_token(self)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['with_bad_types'],
+                tenancy_values.PRIVATE_ROOM_BAD_TYPES,
                 auth_token
             )
             ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.PRIVATE_ROOM_BAD_TYPES
+            )
     
     def test_add_tenancy_no_tenants(self):
         ''' Test adding tenancy without tenants '''
         with self.client:
-            auth_token = register_user_get_auth_token(self)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values['no_tenants'],
+                tenancy_values.PRIVATE_ROOM_NO_TENANTS,
                 auth_token
             )
             ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.PRIVATE_ROOM_NO_TENANTS
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_TENANTS,
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_TENANTS
+            )
 
     def test_add_tenancy_no_notifications(self):
         ''' Test adding tenancy without notifications '''
         with self.client:
-            auth_token = register_user_get_auth_token(self)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values[
-                    'no_notifications'
-                ],
+                tenancy_values.PRIVATE_ROOM_NO_NOTIFICATIONS,
                 auth_token
             )
             ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.PRIVATE_ROOM_NO_NOTIFICATIONS
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_NOTIFICATIONS,
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_NOTIFICATIONS
+            )
 
     def test_add_tenancy_no_tenants_and_notifications(self):
         ''' Test adding tenancy without tenants and notifications '''
         with self.client:
-            auth_token = register_user_get_auth_token(self)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
             resp_addtenancy = AddTenancyApiAction.run(
                 self,
-                values.tenancy_values.test_new_tenancy_values[
-                    'no_tenants_and_notifications'
-                ],
+                tenancy_values.PRIVATE_ROOM_NO_TENANTS_NOTIFICATIONS,
                 auth_token
             )
             ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.PRIVATE_ROOM_NO_TENANTS_NOTIFICATIONS
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_TENANTS_NOTIFICATIONS,
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_addtenancy)
+            ChkNoTenancyInDb.run(
+                self,
+                tenancy_values.WHOLE_PROPERTY_NO_TENANTS_NOTIFICATIONS
+            )
 
     # def test_add_tenancy_with_cash_details(self):
     #     ''' Test adding new tenancy with cash payment method '''
@@ -187,7 +195,7 @@ class TestAddTenancyAPI(BaseTestCase):
     #         )
     #         self.add_new_tenancy_with_cash.run(
     #             user_data['auth_token'],
-    #             values.tenancy_values.test_new_tenancy_values['with_cash']
+    #             tenancy_values.test_new_tenancy_values['with_cash']
     #         )
     
     # def test_add_tenancy_with_paypal_details(self):
@@ -198,7 +206,7 @@ class TestAddTenancyAPI(BaseTestCase):
     #         )
     #         self.add_new_tenancy_with_paypal.run(
     #             user_data['auth_token'],
-    #             values.tenancy_values.test_new_tenancy_values['with_paypal']
+    #             tenancy_values.test_new_tenancy_values['with_paypal']
     #         )
     
     # def test_add_tenancy_with_bank_details(self):
@@ -209,7 +217,7 @@ class TestAddTenancyAPI(BaseTestCase):
     #         )
     #         self.add_new_tenancy_with_bank.run(
     #             user_data['auth_token'],
-    #             values.tenancy_values.test_new_tenancy_values[
+    #             tenancy_values.test_new_tenancy_values[
     #                 'with_bank_transfer'
     #             ]
     #         )
@@ -219,27 +227,139 @@ class TestEditTenancyAPI(BaseTestCase):
     def test_edit_unstarted_tenancy_changed_address(self):
         ''' Test changing unstarted tenancy property address '''
         with self.client:
-            self.assertTrue(False)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY,
+                auth_token
+            )
+            resp_edittenancy = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY_CHANGE_ADDRESS,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkEditTenancyResponse.run(self, resp_edittenancy)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY_CHANGE_ADDRESS,
+                tenancy_id=get_d_value(resp_edittenancy, 'tenancy_id')
+            )
 
     def test_edit_unstarted_tenancy_no_address(self):
         ''' Test removing unstarted tenancy property address '''
         with self.client:
-            self.assertTrue(False)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY,
+                auth_token
+            )
+            resp_edittenancy = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY_NO_ADDRESS,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkEditTenancyResponse.run(self, resp_edittenancy)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY_NO_ADDRESS,
+                tenancy_id=get_d_value(resp_edittenancy, 'tenancy_id')
+            )
 
     def test_edit_unstarted_tenancy_changed_rent_type_to_whole_property(self):
         ''' Test changing unstarted tenancy rent type '''
         with self.client:
-            self.assertTrue(False)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY,
+                auth_token
+            )
+            resp_edittenancy = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkEditTenancyResponse.run(self, resp_edittenancy)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY,
+                tenancy_id=get_d_value(resp_edittenancy, 'tenancy_id')
+            )
+            resp_edittenancy = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY_NULL_ROOM_NAME,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkEditTenancyResponse.run(self, resp_edittenancy)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY_NULL_ROOM_NAME,
+                tenancy_id=get_d_value(resp_edittenancy, 'tenancy_id')
+            )
 
     def test_edit_unstarted_tenancy_changed_rent_type_to_private_room(self):
         ''' Test changing unstarted tenancy rent type '''
         with self.client:
-            self.assertTrue(False)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY,
+                auth_token
+            )
+            resp_edittenancy_no_room = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY_NO_ROOM_NAME,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkResponseActionBadRequest.run(self, resp_edittenancy_no_room)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY,
+                tenancy_id=get_d_value(resp_addtenancy, 'tenancy_id')
+            )
+            resp_edittenancy = EditTenancyApi.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY,
+                get_d_value(resp_addtenancy, 'tenancy_id'),
+                auth_token
+            )
+            ChkEditTenancyResponse.run(self, resp_edittenancy)
+            ChkTenancyDbStateById.run(
+                self,
+                tenancy_values.UNSTARTED_PRIVATE_ROOM_TENANCY,
+                tenancy_id=get_d_value(resp_edittenancy, 'tenancy_id')
+            )
 
     def test_edit_unstarted_tenancy_no_rent_type(self):
         ''' Test removing unstarted tenancy rent type '''
         with self.client:
-            self.assertTrue(False)
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            resp_addtenancy = AddTenancyApiAction.run(
+                self,
+                tenancy_values.UNSTARTED_WHOLE_PROPERTY_TENANCY,
+                auth_token
+            )
 
     def test_edit_unstarted_private_room_tenancy_change_room_name(self):
         '''
@@ -404,6 +524,64 @@ class TestEditTenancyAPI(BaseTestCase):
 
     def test_edit_ended_tenancy_no_tenancy_notes(self):
         pass
+
+
+class TestListTenancies(BaseTestCase):
+    ''' Test list Tenancy endpoint '''
+
+    def test_list_no_tenancies(self):
+        ''' Test listing tenancies with no tenancies '''
+        with self.client:
+            ChkListTenancyResponseAction.run(
+                self,
+                dict(),
+                ListTenancyApiAction.run(
+                    self,
+                    RegisterUserHelper.register_user_get_auth_token(
+                        self,
+                        user_values.USER_1
+                    )
+                )
+            )
+
+    def test_list_one_tenancy(self):
+        ''' Test listing tenancies with one tenancy '''
+        with self.client:
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            tenancy_id = json.loads(AddTenancyApiAction.run(
+                self,
+                tenancy_values.NEW_TENANCY_LIST[2],
+                auth_token
+            ).data.decode())['d']['tenancy_id']
+            ChkListTenancyResponseAction.run(self, {
+                tenancy_id: tenancy_values.NEW_TENANCY_LIST[2]
+            }, ListTenancyApiAction.run(self, auth_token))
+
+    def test_list_ten_tenancies(self):
+        ''' Test listing tenancies with ten tenancy '''
+        with self.client:
+            auth_token = RegisterUserHelper.register_user_get_auth_token(
+                self,
+                user_values.USER_1
+            )
+            test_tenancy_list_dict = dict()
+            for test_tenancy in tenancy_values.NEW_TENANCY_LIST:
+                test_tenancy_list_dict[
+                    json.loads(AddTenancyApiAction.run(
+                        self,
+                        test_tenancy,
+                        auth_token
+                    ).data.decode())['d']['tenancy_id']
+                ] = test_tenancy
+
+            ChkListTenancyResponseAction.run(self, test_tenancy_list_dict,
+                                             ListTenancyApiAction.run(
+                                                 self,
+                                                 auth_token
+                                             ))
 
 
 if __name__ == '__main__':

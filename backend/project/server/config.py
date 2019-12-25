@@ -16,7 +16,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     AUTH_DURATION = 24 * 60 * 60
     EXCLUDE_FROM_AUTHENTICATION = [
-        '/auth/register',
+        '/user/register',
         '/user/login'
     ]
     DATE_FMT = '%Y-%m-%d'

@@ -228,14 +228,15 @@ class DeleteTenancyAPI(MethodView):
 
 
 # Define the API resources
-list_tenancies_view = ListTenanciesAPI.as_view('list_property')
-add_new_tenancy_view = AddNewTenancyAPI.as_view('add_property')
-get_tenancy_view = GetTenancyAPI.as_view('get_property')
+list_tenancies_view = ListTenanciesAPI.as_view('list_tenancy')
+add_new_tenancy_view = AddNewTenancyAPI.as_view('add_tenancy')
+get_tenancy_view = GetTenancyAPI.as_view('get_tenancy')
+edit_tenancy_view = EditTenancyAPI.as_view('edit_tenancy')
 save_tenancy_notes_view = SaveTenancyNotesAPI.as_view('save_tenancy_notes')
 save_tenancy_enddate_view = SaveTenancyEndDateAPI.as_view(
     'save_tenancy_enddate'
 )
-delete_tenancy_view = DeleteTenancyAPI.as_view('delete_property')
+delete_tenancy_view = DeleteTenancyAPI.as_view('delete_tenancy')
 
 
 # Add rules for API Endpoints
@@ -247,6 +248,11 @@ tenancy_blueprint.add_url_rule(
 tenancy_blueprint.add_url_rule(
     '/tenancy/addnew',
     view_func=add_new_tenancy_view,
+    methods=['POST']
+)
+tenancy_blueprint.add_url_rule(
+    '/tenancy/edit',
+    view_func=edit_tenancy_view,
     methods=['POST']
 )
 tenancy_blueprint.add_url_rule(
