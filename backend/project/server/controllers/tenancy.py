@@ -146,9 +146,7 @@ class AddNewTenancyAPI(MethodView):
             new_tenancy.address = request_json['tenancy']['address']
             new_tenancy.rent_type_id = foriegn_ids['rent_type_id']
             if request_json['tenancy']['rent_type'] == 'Private Rooms':
-                new_tenancy.room_name = request_json['tenancy'][
-                    'room_name'
-                ]
+                new_tenancy.room_name = request_json['tenancy']['room_name']
             new_tenancy.set_rent_cost(
                 round(float(request_json['tenancy']['rent_cost']), 2),
                 foriegn_ids['payment_terms_id']
@@ -160,13 +158,11 @@ class AddNewTenancyAPI(MethodView):
             db.session.add(new_tenancy)
             db.session.flush()
             db.session.add(TenancyHistory(updated_tenancy=new_tenancy))
-
             # Add Tenants to database
             db.session.bulk_save_objects([Tenant(
                 tenant_name,
                 new_tenancy.id
             ) for tenant_name in request_json['tenants']])
-
             # Add notifictions
             db.session.bulk_save_objects([Notification(
                 notification_days,
@@ -179,8 +175,7 @@ class AddNewTenancyAPI(MethodView):
             tenant_bill_histories = [
                 TenantBillHistory(tenant_bill) for tenant_bill in tenant_bills
             ]
-            db.session.bulk_save_objects(tenant_bill_histories)
-            
+            db.session.bulk_save_objects(tenant_bill_histories)            
             db.session.commit()
             response = jsonify({
                 'status': 'success',
@@ -196,8 +191,77 @@ class AddNewTenancyAPI(MethodView):
 class EditTenancyAPI(MethodView):
     ''' Save Tenancy '''
     def post(self):
-        ''' Process '''
-        return jsonify({'status': 'fail'}), 400
+        try:
+            if not request.is_json:
+                raise Exception
+            request_json = request.get_json()
+            # Get required foriegn keys. If not successful, throw error
+            foreign_ids_set = db.session.query(
+                User.account_id,
+                RentType.id,
+                PaymentTerms.id
+            ).filter(
+                User.id == int(session.pop('user_id', None))
+            ).filter(
+                RentType.value == request_json['tenancy']['rent_type']
+            ).filter(
+                PaymentTerms.value == request_json['tenancy'][
+                    'payment_terms'
+                ]
+            ).first()
+            if foreign_ids_set == None or None in foreign_ids_set:
+                response = jsonify({
+                    'status': 'fail',
+                    'message': UNKNOWN_ITEM_TYPE
+                }), 400
+            foriegn_ids = {
+                'user_account_id': foreign_ids_set[0],
+                'rent_type_id': foreign_ids_set[1],
+                'payment_terms_id': foreign_ids_set[2]
+            }
+            # Edit Tenancy and add new TenancyHistory
+            tenancy = db.session.query(Tenancy).filter(
+                Tenancy.id == int(request_json['tenancy']['tenancy_id'])
+            ).first()
+            tenancy.set_tenancy_dates(
+                datetime.strptime(request_json['tenancy']['start_date'],
+                                  app.config['DATE_FMT']),
+                datetime.strptime(request_json['tenancy']['end_date'],
+                                  app.config['DATE_FMT'])
+            )
+            tenancy.address = request_json['tenancy']['address']
+            tenancy.rent_type_id = foriegn_ids['rent_type_id']
+            if request_json['tenancy']['rent_type'] == 'Private Rooms':
+                if request_json['tenancy'][
+                    'room_name'
+                ] == None or request_json['tenancy'][
+                    'room_name'
+                ].strip() == '':
+                    raise Exception
+                tenancy.room_name = request_json['tenancy']['room_name']
+            else:
+                tenancy.room_name = None
+            tenancy.set_rent_cost(
+                round(float(request_json['tenancy']['rent_cost']), 2),
+                foriegn_ids['payment_terms_id']
+            )
+            tenancy.notes = request_json['tenancy']['notes']
+            tenancy.payment_description = request_json['tenancy'][
+                'payment_description'
+            ]
+            db.session.commit()
+            db.session.flush()
+            db.session.add(TenancyHistory(updated_tenancy=tenancy))
+            response = jsonify({
+                'status': 'success',
+                'd': {'tenancy_id': tenancy.id}
+            }), 200
+        except Exception:
+            response = jsonify({'status': 'fail'}), 400
+            db.session.rollback()
+        finally:
+            return response
+
 
 
 # Must determine if we need this:

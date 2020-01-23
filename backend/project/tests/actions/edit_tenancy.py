@@ -9,8 +9,10 @@ class EditTenancyApi():
         return test_cls.client.post(
             '/tenancy/edit',
             headers=dict(Authorization='Bearer ' + auth_token),
-            data=json.dumps(dict(tenancy_test_value,
-                                 tenancy_id=tenancy_id_test_value)),
+            data=json.dumps(dict(tenancy=dict(
+                tenancy_test_value,
+                tenancy_id=tenancy_id_test_value
+            ))),
             content_type='application/json',
         )
 

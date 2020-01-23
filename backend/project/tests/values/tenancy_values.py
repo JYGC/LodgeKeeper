@@ -85,7 +85,8 @@ NEW_TENANCY_LIST = [
         payment_terms='Per fortnight',
         rent_cost=706.99,
         payment_description='Pay this is Account A TEST TEST',
-        tenants=['Peson KettA', 'Peson KettB', 'Peson KettC', 'Peson KettD', 'Peson KettF'],
+        tenants=['Peson KettA', 'Peson KettB', 'Peson KettC', 'Peson KettD',
+                 'Peson KettF'],
         notifications=[1, 2, 4, 3]
     )
 ]
@@ -174,7 +175,7 @@ UNSTARTED_PRIVATE_ROOM_TENANCY = dict(
     address='123 Goldstern Drive, Tyron, QLD 5666',
     rent_type='Private Rooms',
     room_name='Room 4',
-    notes='I was walking do a street one night and got my butt kicked hard',
+    notes='I was walking do a street one night and got my face kicked in. I thought I deserved it',
     payment_terms='Per month',
     rent_cost=865.99,
     payment_description='Pay this is Account A',

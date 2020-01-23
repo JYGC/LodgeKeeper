@@ -61,10 +61,13 @@ class ChkNoTenancyInDb(ChkTenancyDbState):
 class ChkTenancyDbStateById(ChkTenancyDbState):
     @staticmethod
     def filter_query(tenancy_table, **filter_values):
-        return tenancy_table.filter(Tenancy.id == filter_values['tenancy_id'])
+        return tenancy_table.order_by(TenancyHistory.id.desc()).correlate(
+            Tenancy
+        ).filter(Tenancy.id == filter_values['tenancy_id'])
     
-    @staticmethod
-    def test_assersions(test_cls, tenancy_list, test_values, **filter_values):
+    @classmethod
+    def test_assersions(self, test_cls, tenancy_list, test_values,
+                        **filter_values):
         tenancy_id = filter_values['tenancy_id']
         test_cls.assertEqual(
             tenancy_list[0].Tenancy.end_date.strftime(app.config['DATE_FMT']),
@@ -75,9 +78,11 @@ class ChkTenancyDbStateById(ChkTenancyDbState):
         test_cls.assertEqual(tenancy_list[0].RentType.value,
                              test_values['rent_type'])
         test_cls.assertEqual(tenancy_list[0].Tenancy.room_name,
-                             test_values['room_name'])
-        test_cls.assertEqual(tenancy_list[0].Tenancy.notes,
-                             test_values['notes'])
+                             None if (
+                                 test_values['room_name'] == ''
+                             ) else test_values['room_name'])
+        self._test_notes_assersion(test_cls, tenancy_list[0].Tenancy.notes,
+                                   test_values['notes'])
         test_cls.assertEqual(tenancy_list[0].PaymentTerms.value,
                              test_values['payment_terms'])
         test_cls.assertEqual(
@@ -111,3 +116,13 @@ class ChkTenancyDbStateById(ChkTenancyDbState):
         tenant_names = set(tenant.name for tenant in tenant_list)
         test_cls.assertEqual(set(test_values['tenants']) ^ tenant_names,
                              set())
+
+    @staticmethod
+    def _test_notes_assersion(test_cls, db_note_value, test_note_value):
+        test_cls.assertEqual(db_note_value, test_note_value)
+
+
+class ChkTenancyDbStateByIdNoNotes(ChkTenancyDbStateById):
+    @staticmethod
+    def _test_notes_assersion(test_cls, db_note_value, test_note_value):
+        pass

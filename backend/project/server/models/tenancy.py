@@ -60,17 +60,26 @@ class Tenancy(db.Model, ITenancyId, ITenancyValues):
             self.rent_cost_per_week = rent_cost
     
     def set_tenancy_dates(self, start_date, end_date):
+        # Globalization unfriendly
+        today = datetime.datetime.now().replace(hour=0, minute=0, second=0,
+                                                microsecond=0)
+        self._valid_tenancy_dates(start_date, end_date, today)
         self.start_date = start_date
         self.end_date = end_date
-        self.update_tenancy_status()
+        self._update_tenancy_status(today)
     
-    def update_tenancy_status(self):
-        now = datetime.datetime.now()
-        if now < self.start_date:
+    def _valid_tenancy_dates(self, start_date, end_date, today):
+        if start_date > end_date:
+            raise Exception(
+                'End date cannot be greater then or equal to start date'
+            )
+    
+    def _update_tenancy_status(self, today):
+        if today < self.start_date:
             self.tenancy_status_id = TenancyStatus.get_value_id('Unstarted')
-        elif now > self.start_date and now < self.end_date:
+        elif today >= self.start_date and today < self.end_date:
             self.tenancy_status_id = TenancyStatus.get_value_id('Active')
-        elif now > self.end_date:
+        elif today > self.end_date:
             self.tenancy_status_id = TenancyStatus.get_value_id('Ended')
         else:
             raise Exception('Tenancy start and end dates are not valid')
