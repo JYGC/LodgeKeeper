@@ -6,7 +6,7 @@ project/tests/test_auth.py
 import time, json, unittest, random, string
 
 from project.server import db
-from project.server.models.auth import Account, User, BlacklistToken
+from project.server.models.user import Account, User, BlacklistToken
 from project.tests.base import BaseTestCase
 from project.tests.actions.register_user import (RegisterUserApiAction,
                                                  ChkRegUserRespAction,

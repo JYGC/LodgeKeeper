@@ -7,7 +7,7 @@ from flask.views import MethodView
 from flask import Blueprint, request, jsonify, session
 
 from project.server import db, app
-from project.server.models.auth import User
+from project.server.models.user import User
 from project.server.models.payment_details import PaymentDetailsFetcher
 
 class GetAllPaymentDetails(MethodView):

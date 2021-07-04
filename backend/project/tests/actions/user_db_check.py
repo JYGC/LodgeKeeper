@@ -1,5 +1,5 @@
 from project.server import db
-from project.server.models.auth import Account, User
+from project.server.models.user import Account, User
 
 
 class ChkUserDbState():

@@ -5,7 +5,7 @@ from flask import request, jsonify, session
 from functools import wraps
 
 from project.server import app
-from project.server.models.auth import User
+from project.server.models.user import User
 
 class AuthTokenValidator():
     ''' Auth Token Validator '''

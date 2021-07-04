@@ -7,7 +7,7 @@ from flask import Blueprint, request, make_response, jsonify, session
 from flask.views import MethodView
 
 from project.server import bcrypt, db
-from project.server.models.auth import Account, User, BlacklistToken
+from project.server.models.user import Account, User, BlacklistToken
 
 user_blueprint = Blueprint('user', __name__)
 
