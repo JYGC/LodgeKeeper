@@ -48,4 +48,23 @@ export default {
         failCallback(error);
       });
   },
+  registerAPI(_email, _address, _phone, _password, successCallback, failCallback) {
+    axios.post(`${config.apiURL}/user/register`, {
+      email: _email,
+      address: _address,
+      phone: _phone,
+      password: _password,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        localStorage.setItem('token', response.data.auth_token);
+        successCallback(response);
+      })
+      .catch((error) => {
+        failCallback(error);
+      });
+  },
 };
