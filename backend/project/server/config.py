@@ -4,7 +4,7 @@ project/server/config.py
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-postgres_local_base = 'mysql://lodgekeeper:Test3r$@localhost/'
+postgres_local_base = 'postgresql://lodgekeeper:Test3r$@localhost/'
 database_name = 'lodgekeeper'
 
 
@@ -44,4 +44,4 @@ class ProductionConfig(BaseConfig):
     """Production configuration."""
     SECRET_KEY = 'my_precious'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'mysql:///example'
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///example'

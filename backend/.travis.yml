@@ -17,11 +17,11 @@ install:
   - pipenv install
 
 before_script:
-  - mysql --user="root" --execute="CREATE USER 'lodgekeeper'@'localhost' IDENIFIED BY 'Test3r$';"
-  - mysql --user="root" --execute="CREATE DATABASE lodgekeeper;"
-  - mysql --user="root" --execute="CREATE DATABASE lodgekeeper_test;"
-  - mysql --user="root" --execute="GRANT ALL PRIVILEGES ON lodgekeeper.* TO 'lodgekeeper'@'localhost';"
-  - mysql --user="root" --execute="GRANT ALL PRIVILEGES ON lodgekeeper_test.* TO 'lodgekeeper'@'localhost';"
+  - psql -c "CREATE USER lodgekeeper WITH ENCRYPTED PASSWORD 'Test3r$';" -U postgres
+  - psql -c "CREATE DATABASE lodgekeeper;" -U postgres
+  - psql -c "CREATE DATABASE lodgekeeper_test;" -U postgres
+  - psql -c "GRANT ALL PRIVILEGES ON DATABASE lodgekeeper TO lodgekeeper;" -U postgres
+  - psql -c "GRANT ALL PRIVILEGES ON DATABASE lodgekeeper_test TO lodgekeeper;" -U postgres
   - python manage.py db init
   - python manage.py db migrate
   - python manage.py db upgrade

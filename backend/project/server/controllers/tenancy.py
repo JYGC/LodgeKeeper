@@ -37,7 +37,7 @@ class ListTenanciesAPI(MethodView):
             # Get query to get tenant names
             tenant_names_query = db.session.query(
                 Tenant.tenancy_id,
-                func.group_concat(Tenant.name).label('tenant_names')
+                func.array_agg(Tenant.name).label('tenant_names')
             ).group_by(Tenant.tenancy_id).subquery()
             # Get query to get tenant bills
             next_payment_query = db.session.query(
@@ -90,7 +90,7 @@ class ListTenanciesAPI(MethodView):
                     'TenancyStatus': row[5]
                 } for row in tenancy_rows]}
             }), 200
-        except Exception as ex:
+        except Exception:
             response = jsonify({'status': 'fail'}), 400
             db.session.rollback()
         finally:
