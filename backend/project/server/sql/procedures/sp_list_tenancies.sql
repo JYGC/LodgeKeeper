@@ -1,17 +1,26 @@
 -- Get tenancy display rows
-DROP PROCEDURE IF EXISTS sp_list_tenancies;
-CREATE PROCEDURE sp_list_tenancies
+DROP FUNCTION IF EXISTS sp_list_tenancies;
+CREATE FUNCTION sp_list_tenancies
 (
     p_user_id INTEGER
 )
-LANGUAGE SQL
+RETURNS TABLE
+(
+    tenancy JSON,
+    tenant_names VARCHAR [],
+    payment_terms VARCHAR,
+    rent_type VARCHAR,
+    next_payment TIMESTAMP,
+    tenancy_status VARCHAR
+)
 AS $$
-    SELECT
+BEGIN
+    RETURN QUERY SELECT
         ROW_TO_JSON(tenancy.*) AS tenancy,
-        tenant_names.tenant_names,
+        tenant_names.tenant_name_array AS tenant_names,
         payment_terms.value AS payment_terms,
         rent_type.value AS rent_type,
-        next_payment.next_payment_due_date,
+        next_payment.next_payment_due_date AS next_payment,
         tenancy_status.value AS tenancy_status
     FROM
         users
@@ -23,7 +32,7 @@ AS $$
     (
         SELECT
             tenancy_id,
-            tenant_names
+            tenant_name_array
         FROM
             fn_tenant_names_array(p_user_id)
     ) AS tenant_names
@@ -37,7 +46,7 @@ AS $$
         rent_type
     ON
         tenancy.rent_type_id = rent_type.id
-    LEFT OUTER JOIN LATERAL
+    LEFT OUTER JOIN
     (
         SELECT
             tenancy_id,
@@ -55,4 +64,6 @@ AS $$
         users.id = p_user_id
     AND
         tenancy.is_deleted = false;
-$$;
+END; $$
+
+LANGUAGE 'plpgsql';

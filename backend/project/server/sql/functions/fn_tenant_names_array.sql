@@ -7,7 +7,7 @@ CREATE FUNCTION fn_tenant_names_array
 RETURNS TABLE
 (
     tenancy_id INTEGER,
-    tenant_names VARCHAR []
+    tenant_name_array VARCHAR []
 )
 AS $$
 BEGIN

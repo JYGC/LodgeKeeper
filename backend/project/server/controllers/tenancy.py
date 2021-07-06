@@ -8,7 +8,8 @@ from flask.views import MethodView
 from flask import Blueprint, request, jsonify, session
 from sqlalchemy import and_, func
 
-from project.server import db, app
+from project.server import db, dbcalls, app
+from project.server.type_helpers.datestrings import DateStringFormat
 from project.server.models.user import User
 from project.server.models.tenancy import Tenancy, TenancyHistory
 from project.server.models.tenant import Tenant
@@ -34,61 +35,28 @@ class ListTenanciesAPI(MethodView):
         Get tenacies belonging to user's account and associated information
         '''
         try:
-            # Get query to get tenant names
-            tenant_names_query = db.session.query(
-                Tenant.tenancy_id,
-                func.array_agg(Tenant.name).label('tenant_names')
-            ).group_by(Tenant.tenancy_id).subquery()
-            # Get query to get tenant bills
-            next_payment_query = db.session.query(
-                TenantBill.id
-            ).outerjoin(
-                TenantBillStatus,
-                TenantBill.tenant_bill_status_id == TenantBillStatus.id
-            ).filter(and_(
-                TenantBill.tenancy_id == Tenancy.id,
-                TenantBillStatus.value == 'unpaid'
-            )).order_by(
-                TenantBill.due_date.asc()
-            ).limit(1).correlate(Tenancy).subquery()
-            # Get tenancy display rows
-            tenancy_rows = db.session.query(
-                Tenancy,
-                tenant_names_query.c.tenant_names,
-                PaymentTerms.value,
-                RentType.value,
-                TenantBill.due_date,
-                TenancyStatus.value
-            ).outerjoin(
-                User,
-                User.account_id == Tenancy.account_id
-            ).outerjoin(
-                tenant_names_query,
-                Tenancy.id == tenant_names_query.c.tenancy_id
-            ).outerjoin(
-                PaymentTerms,
-                Tenancy.payment_terms_id == PaymentTerms.id
-            ).outerjoin(
-                RentType,
-                Tenancy.rent_type_id == RentType.id
-            ).outerjoin(
-                TenantBill,
-                next_payment_query == TenantBill.id
-            ).outerjoin(
-                TenancyStatus,
-                Tenancy.tenancy_status_id == TenancyStatus.id
-            ).filter(and_(User.id == int(session.pop('user_id', None)),
-                          Tenancy.is_deleted == False)).all()
+            results = dbcalls.sp_list_tenancies.call(
+                user_id = int(session.pop('user_id', None))
+            )
+            tenancy_details = []
+            for result in results:
+                result[0]['start_date'] = DateStringFormat.remove_time_part(
+                    result[0]['start_date']
+                )
+                result[0]['end_date'] = DateStringFormat.remove_time_part(
+                    result[0]['end_date']
+                )
+                tenancy_details.append({
+                    'Tenancy': result[0],
+                    'TenantsNames': result[1],
+                    'PaymentTerms': result[2],
+                    'RentType': result[3],
+                    'NextPayment': result[4],
+                    'TenancyStatus': result[5]
+                })
             response = jsonify({
                 'status': 'success',
-                'd': {'tenancy_list': [{
-                    'Tenancy': row.Tenancy,
-                    'TenantsNames': row[1],
-                    'PaymentTerms': row[2],
-                    'RentType': row[3],
-                    'NextPayment': row[4],
-                    'TenancyStatus': row[5]
-                } for row in tenancy_rows]}
+                'd': {'tenancy_list': tenancy_details}
             }), 200
         except Exception:
             response = jsonify({'status': 'fail'}), 400

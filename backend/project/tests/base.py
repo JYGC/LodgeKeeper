@@ -4,6 +4,7 @@
 from flask_testing import TestCase
 
 from project.server import app, db, models
+from project.server.sql import sqlcalls
 
 
 class BaseTestCase(TestCase):
@@ -16,6 +17,8 @@ class BaseTestCase(TestCase):
     def setUp(self):
         db.create_all()
         models.type_values.InitializeTypeValue.update_default_data()
+        sqlcalls.InitializeSQL.update_functions()
+        sqlcalls.InitializeSQL.update_procedures()
         db.session.commit()
         self.setup_actions()
 

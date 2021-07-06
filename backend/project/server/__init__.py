@@ -24,6 +24,8 @@ app.config.from_object(app_settings)
 # create hashing instance and create DB ORM instance
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
+from project.server.sql.sqlcalls import SQLFunctionCalls
+dbcalls = SQLFunctionCalls()
 # Modify json encoder to encode column attributes of sqlalchemy classes,
 # decimals and datetimes
 from project.server.type_helpers.json import LodgeKeeperEncoder

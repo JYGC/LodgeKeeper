@@ -3,7 +3,9 @@ project/tests/test_auth.py
 '''
 
 
-import time, json, unittest, random, string
+import time
+import json
+import unittest
 
 from project.server import db
 from project.server.models.user import Account, User, BlacklistToken

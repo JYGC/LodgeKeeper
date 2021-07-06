@@ -22,6 +22,7 @@ COV = coverage.coverage(
 COV.start()
 
 from project.server import app, db, models
+from project.server.sql import sqlcalls
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -72,9 +73,16 @@ def drop_db():
 
 
 @manager.command
-def prefill_db():
+def fill_default_data():
     ''' Update all default data '''
     models.type_values.InitializeTypeValue.update_default_data()
+
+
+@manager.command
+def create_sql():
+    ''' Update all functions and stored procedures '''
+    sqlcalls.InitializeSQL.update_functions()
+    sqlcalls.InitializeSQL.update_procedures()
 
 
 if __name__ == '__main__':

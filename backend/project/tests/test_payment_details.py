@@ -1,6 +1,6 @@
-# '''
-# Paymetn details model test cases
-# '''
+'''
+Paymetn details model test cases
+'''
 
 # import unittest
 
@@ -26,18 +26,14 @@
 #                                                    BankDetails,
 #                                                    PaymentDetailsUpdater,
 #                                                    PaymentDetailsFetcher)
-# from project.tests import values
+# from project.tests.values import user_values
 
 
 # def register_user_get_account_id(test_cls):
 #     RegisterUserApiAction.run(test_cls,
-#                               values.auth_values.test_user_values[
-#                                   'user_1'
-#                               ])
+#                               user_values.USER_1)
 #     return db.session.query(User.account_id).filter(
-#         User.email == values.auth_values.test_user_values[
-#             'user_1'
-#         ].email
+#         User.email == user_values.USER_1['email']
 #     ).first()[0]
 
 

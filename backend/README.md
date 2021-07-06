@@ -51,7 +51,8 @@ Create the tables and run the migrations:
 $ python manage.py create_db
 $ python manage.py db init
 $ python manage.py db migrate
-$ python manage.py prefill_db
+$ python manage.py fill_default_data
+$ python manage.py create_sql
 ```
 
 ### Run the Application
