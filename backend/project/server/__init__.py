@@ -34,11 +34,11 @@ app.json_encoder = LodgeKeeperEncoder
 from project.server.request_helpers.auth import AuthTokenValidator
 app.before_request(AuthTokenValidator.validate)
 # Coneect flask blueprints
-from project.server.controllers.user import user_blueprint
+from project.server.apis.user import user_blueprint
 app.register_blueprint(user_blueprint)
-from project.server.controllers.tenancy import tenancy_blueprint
+from project.server.apis.tenancy import tenancy_blueprint
 app.register_blueprint(tenancy_blueprint)
-from project.server.controllers.tenant_bill import tenant_bill_blueprint
+from project.server.apis.tenant_bill import tenant_bill_blueprint
 app.register_blueprint(tenant_bill_blueprint)
-from project.server.controllers.notification import notification_blueprint
+from project.server.apis.notification import notification_blueprint
 app.register_blueprint(notification_blueprint)

@@ -19,7 +19,7 @@
         <tbody>
           <tr v-for="tenancyItem in tenancyList" v-bind:key="tenancyItem.Tenancy.id">
             <td>
-              {{ tenancyItem.TenantsNames.toString().replace(/,/g, ", ") }}
+              {{ tenancyItem.TenantsNames.join(", ") }}
             </td>
             <td>
               {{ tenancyItem.Tenancy.start_date }}
