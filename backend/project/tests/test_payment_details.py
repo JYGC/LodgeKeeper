@@ -21,7 +21,7 @@
 #     ChkPaymentDetailsFetcherBankTransOnly
 # )
 # from project.server import db
-# from project.server.models.auth import User
+# from project.server.models.user import User
 # from project.server.models.payment_details import (CashDetails, PaypalDetails,
 #                                                    BankDetails,
 #                                                    PaymentDetailsUpdater,

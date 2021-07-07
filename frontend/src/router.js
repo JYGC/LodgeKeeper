@@ -44,14 +44,15 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/login', '/register'];
+  const nextPageIsPublic = publicPages.includes(to.path);
   userAPI.checkAuthenticationAPI(() => {
-    if (publicPages.includes(to.path)) {
+    if (nextPageIsPublic) {
       next('/');
     } else {
       next();
     }
   }, () => {
-    next('/login');
+    next(nextPageIsPublic ? to.path : '/login');
   });
 
   // NOT UNDERSTOOD

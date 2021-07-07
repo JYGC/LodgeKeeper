@@ -9,7 +9,7 @@ from flask import Blueprint, request, jsonify, session
 from sqlalchemy import and_, func
 
 from project.server import db, app
-from project.server.models.auth import User
+from project.server.models.user import User
 from project.server.models.tenancy import Tenancy, TenancyHistory
 from project.server.models.tenant import Tenant
 from project.server.models.notifications import Notification

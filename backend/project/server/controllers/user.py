@@ -7,7 +7,7 @@ from flask import Blueprint, request, make_response, jsonify, session
 from flask.views import MethodView
 
 from project.server import bcrypt, db
-from project.server.models.auth import Account, User, BlacklistToken
+from project.server.models.user import Account, User, BlacklistToken
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -46,7 +46,7 @@ class RegisterAPI(MethodView):
                     'auth_token': auth_token.decode()
                 }
                 return make_response(jsonify(response)), 201
-            except Exception as ex:
+            except Exception:
                 response = {
                     'status': 'fail',
                     'message': 'Some error occurred. Please try again.'

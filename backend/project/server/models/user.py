@@ -1,5 +1,5 @@
 """
-project/server/models/auth.py
+project/server/models/user.py
 """
 
 import jwt
