@@ -57,3 +57,4 @@ class ChkListTenancyResponseAction():
             test_cls.assertEqual(test_tenancy_list_dict[_id]['rent_cost'],
                                  response_tenancy_dict[_id]['Tenancy']['rent_cost'])
             test_cls.assertIsNone(response_tenancy_dict[_id]['Tenancy']['notes'])
+            # Must check tenant name array
